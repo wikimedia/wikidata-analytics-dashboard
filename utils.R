@@ -86,9 +86,10 @@ make_dygraph <- function(data, x, y, title, is_single = FALSE, legend_name = NUL
     data <- xts(data[, -1], order.by = data[, 1])
   }
   return(dygraph(data, main = title, xlab = x, ylab = y) %>%
+           dySeries("V1", label = y) %>%
            dyLegend(width = 400, show = "always") %>%
            dyOptions(strokeWidth = 3,
-                     colors = brewer.pal(max(3, ncol(data)), "Set2"),
+                     colors = brewer.pal(max(3, ncol(data)), "Set1"),
                      drawPoints = FALSE, pointSize = 3, labelsKMB = use_si,
                      includeZero = TRUE) %>%
            dyCSS(css = "./assets/css/custom.css"))
@@ -194,3 +195,24 @@ safe_tail <- function(x, n, silent = TRUE) {
   }
   return(tail(x[order(x[[timestamp_column[1]]]), ], n))
 }
+
+barChartPlotter <- "function barChartPlotter(e) {
+  var ctx = e.drawingContext;
+  var points = e.points;
+  var y_bottom = e.dygraph.toDomYCoord(0);  // see http://dygraphs.com/jsdoc/symbols/Dygraph.html#toDomYCoord
+
+  // This should really be based on the minimum gap
+  var bar_width = 2/3 * (points[1].canvasx - points[0].canvasx);
+  ctx.fillStyle = e.color;
+
+  // Do the actual plotting.
+  for (var i = 0; i < points.length; i++) {
+    var p = points[i];
+    var center_x = p.canvasx;  // center of the bar
+
+    ctx.fillRect(center_x - bar_width / 2, p.canvasy,
+                 bar_width, y_bottom - p.canvasy);
+    ctx.strokeRect(center_x - bar_width / 2, p.canvasy,
+                   bar_width, y_bottom - p.canvasy);
+  }
+}"

@@ -1,3 +1,15 @@
 .dygraph-legend {
   background-color: #ECF0F5 !important;
 }
+
+.skin-blue .main-header .navbar{background-color:#000033}.skin-blue
+
+.skin-blue .main-header .logo:hover {
+    background-color: #000033;
+}
+
+.skin-blue .main-header .logo {
+    background-color: #000033;
+    color: #fff;
+    border-bottom: 0 solid transparent;
+}
