@@ -16,7 +16,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Wikidata",
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
              menuSubItem(text = "Pages", tabName = "wikidata_pages"),
-             menuSubItem(text = "Properties", tabName = "wikidata_properties")),    
+             menuSubItem(text = "Properties", tabName = "wikidata_properties")),
     selectInput(inputId = "smoothing_global", label = "Smoothing (Global Setting)", selectize = TRUE, selected = "day",
                 choices = c("No Smoothing" = "day", "Moving Average" = "moving_avg",
                             "Weekly Median" = "week", "Monthly Median" = "month"))

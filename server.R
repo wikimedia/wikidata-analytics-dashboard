@@ -3,18 +3,18 @@ source("utils.R")
 
 existing_date <- (Sys.Date()-1)
 
-## Read in desktop data and generate means for the value boxes, along with a time-series appropriate form for
+## Read in data and generate means for the value boxes, along with a time-series appropriate form for
 ## dygraphs.
 read_desktop <- function(){
   data <- download_set("wikidata-edits.tsv")
   wikidata_edits <<- data
-  
+
   data <- download_set("wikidata-pages.tsv")
   wikidata_pages <<- data
-  
+
   data <- download_set("wikidata-properties.tsv")
   wikidata_properties <<- data
-  
+
   return(invisible())
 }
 
