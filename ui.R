@@ -18,7 +18,8 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Pages", tabName = "wikidata_pages"),
              menuSubItem(text = "Properties", tabName = "wikidata_properties"),
              menuSubItem(text = "Active Users", tabName = "wikidata_active_users"),
-             menuSubItem(text = "Social Media", tabName = "wikidata_social_media")),
+             menuSubItem(text = "Social Media", tabName = "wikidata_social_media"),
+             menuSubItem(text = "Mailing Lists", tabName = "wikidata_mailing_lists")),
     menuItem(text = "Content",
              menuSubItem(text = "Overview", tabName = "wikidata_content_overview"),
              menuSubItem(text = "Referenced statements", tabName = "wikidata_content_refstmts"),
@@ -29,44 +30,33 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Statements per item", tabName = "wikidata_content_statement_item"),
              menuSubItem(text = "Labels per item", tabName = "wikidata_content_labels_item"),
              menuSubItem(text = "Descriptions per item", tabName = "wikidata_content_descriptions_item"),
-             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item")),
-    selectInput(inputId = "smoothing_global", label = "Smoothing (Global Setting)", selectize = TRUE, selected = "day",
-                choices = c("No Smoothing" = "day", "Moving Average" = "moving_avg",
-                            "Weekly Median" = "week", "Monthly Median" = "month"))
+             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item"))
   )
 )
-
-# Standardised input selector for smoothing
-smooth_select <- function(input_id, label = "Smoothing") {
-  return(selectInput(inputId = input_id, label = label, selectize = TRUE,
-                     selected = "global", choices = c("Use Global Setting" = "global",
-                     "No Smoothing" = "day", "Moving Average" = "moving_avg",
-                     "Weekly Median" = "week", "Monthly Median" = "month")))
-}
 
 #Body elements for the visualisations.
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "wikidata_edits",
-            smooth_select("smoothing_wikidata_edits"),
             dygraphOutput("wikidata_edits_plot"),
             includeMarkdown("./assets/content/wikidata-edits.md")),
     tabItem(tabName = "wikidata_pages",
-            smooth_select("smoothing_wikidata_pages"),
             dygraphOutput("wikidata_pages_plot"),
             includeMarkdown("./assets/content/wikidata-pages.md")),
     tabItem(tabName = "wikidata_properties",
-            smooth_select("smoothing_wikidata_properties"),
             dygraphOutput("wikidata_properties_plot"),
             includeMarkdown("./assets/content/wikidata-properties.md")),
     tabItem(tabName = "wikidata_active_users",
-            smooth_select("smoothing_wikidata_active_users"),
             dygraphOutput("wikidata_active_users_plot"),
             includeMarkdown("./assets/content/wikidata-active-users.md")),
     tabItem(tabName = "wikidata_social_media",
-            smooth_select("smoothing_wikidata_social_media"),
             dygraphOutput("wikidata_social_media_plot"),
+            htmlOutput("legend_social_media"),
             includeMarkdown("./assets/content/wikidata-social-media.md")),
+    tabItem(tabName = "wikidata_mailing_lists",
+            dygraphOutput("wikidata_mailing_lists_plot"),
+            htmlOutput("legend_lists"),
+            includeMarkdown("./assets/content/wikidata_mailing_lists.md")),
     tabItem(tabName = "wikidata_content_overview",
             dygraphOutput("wikidata_content_overview_plot"),
             htmlOutput("legend"),

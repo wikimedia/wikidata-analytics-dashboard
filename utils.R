@@ -72,19 +72,7 @@ smoother <- function(dataset, smooth_level = "day", rename = TRUE) {
 
 #Create a dygraph using our standard format.
 make_dygraph <- function(data, x, y, title, is_single = FALSE, legend_name = NULL, use_si = TRUE, smoothing = "day") {
-  # cat("Making dygraph:", title, "\n"); # Debugging
-  if (is_single) {
-    data <- smoother(as.data.frame(data[, c(1, 3)]), smooth_level = smoothing)
-    data <- xts(data[, 2], data[, 1])
-    if (is.null(legend_name)) {
-      names(data) <- "events"
-    } else {
-      names(data) <- legend_name
-    }
-  } else {
-    data %<>% smoother(smooth_level = smoothing)
-    data <- xts(data[, -1], order.by = data[, 1])
-  }
+  data <- xts(data[, -1], order.by = data[, 1])
   return(dygraph(data, main = title, xlab = x, ylab = y) %>%
            dySeries("V1", label = y) %>%
            dyLegend(width = 400, show = "always") %>%
