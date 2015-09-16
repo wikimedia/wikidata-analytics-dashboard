@@ -6,7 +6,7 @@ options(scipen = 500)
 #Header elements for the visualisation
 header <- dashboardHeader(title = "Wikidata Metrics", disable = FALSE)
 
-#Sidebar elements for the search visualisations.
+#Sidebar elements for the visualisations.
 sidebar <- dashboardSidebar(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "stylesheet.css"),
@@ -29,7 +29,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Statements per item", tabName = "wikidata_content_statement_item"),
              menuSubItem(text = "Labels per item", tabName = "wikidata_content_labels_item"),
              menuSubItem(text = "Descriptions per item", tabName = "wikidata_content_descriptions_item"),
-             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wiki-links_item")),
+             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item")),
     selectInput(inputId = "smoothing_global", label = "Smoothing (Global Setting)", selectize = TRUE, selected = "day",
                 choices = c("No Smoothing" = "day", "Moving Average" = "moving_avg",
                             "Weekly Median" = "week", "Monthly Median" = "month"))
@@ -44,7 +44,7 @@ smooth_select <- function(input_id, label = "Smoothing") {
                      "Weekly Median" = "week", "Monthly Median" = "month")))
 }
 
-#Body elements for the search visualisations.
+#Body elements for the visualisations.
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "wikidata_edits",
@@ -68,20 +68,45 @@ body <- dashboardBody(
             dygraphOutput("wikidata_social_media_plot"),
             includeMarkdown("./assets/content/wikidata-social-media.md")),
     tabItem(tabName = "wikidata_content_overview",
-            smooth_select("smoothing_wikidata_content_overview"),
             dygraphOutput("wikidata_content_overview_plot"),
             htmlOutput("legend"),
             includeMarkdown("./assets/content/wikidata-content-overview.md")),
     tabItem(tabName = "wikidata_content_refstmts",
-            smooth_select("smoothing_wikidata_content_refstmts"),
             dygraphOutput("wikidata_content_refstmts_plot"),
             htmlOutput("legend_refstmts"),
             includeMarkdown("./assets/content/wikidata-content-refstmts.md")),
     tabItem(tabName = "wikidata_content_refstmts_wikipedia",
-            smooth_select("smoothing_wikidata_content_refstmts_wikipedia"),
             dygraphOutput("wikidata_content_refstmts_wikipedia_plot"),
             htmlOutput("legend_refstmts_wikipedia"),
-            includeMarkdown("./assets/content/wikidata-content-refstmts.md"))
+            includeMarkdown("./assets/content/wikidata_content_refstmts_wikipedia.md")),
+    tabItem(tabName = "wikidata_content_refstmts_other",
+            dygraphOutput("wikidata_content_refstmts_other_plot"),
+            htmlOutput("legend_refstmts_other"),
+            includeMarkdown("./assets/content/wikidata_content_refstmts_other.md")),
+    tabItem(tabName = "wikidata_content_references",
+            dygraphOutput("wikidata_content_references_plot"),
+            htmlOutput("legend_references"),
+            includeMarkdown("./assets/content/wikidata_content_references.md")),
+    tabItem(tabName = "wikidata_content_statement_ranks",
+            dygraphOutput("wikidata_content_statement_ranks_plot"),
+            htmlOutput("legend_statement_ranks"),
+            includeMarkdown("./assets/content/wikidata_content_statement_ranks.md")),
+    tabItem(tabName = "wikidata_content_statement_item",
+            dygraphOutput("wikidata_content_statement_item_plot"),
+            htmlOutput("legend_statement_item"),
+            includeMarkdown("./assets/content/wikidata_content_statement_item.md")),
+    tabItem(tabName = "wikidata_content_labels_item",
+            dygraphOutput("wikidata_content_labels_item_plot"),
+            htmlOutput("legend_labels_item"),
+            includeMarkdown("./assets/content/wikidata_content_labels_item.md")),
+    tabItem(tabName = "wikidata_content_descriptions_item",
+            dygraphOutput("wikidata_content_descriptions_item_plot"),
+            htmlOutput("legend_descriptions_item"),
+            includeMarkdown("./assets/content/wikidata_content_descriptions_item.md")),
+    tabItem(tabName = "wikidata_content_wikilinks_item",
+            dygraphOutput("wikidata_content_wikilinks_item_plot"),
+            htmlOutput("legend_wikilinks_item"),
+            includeMarkdown("./assets/content/wikidata_content_wikilinks_item.md"))
   )
 )
 
