@@ -38,6 +38,9 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "wikidata_edits",
+            fluidRow(
+              infoBoxOutput("editdelta")
+            ),
             dygraphOutput("wikidata_edits_plot"),
             includeMarkdown("./assets/content/wikidata-edits.md")),
     tabItem(tabName = "wikidata_pages",

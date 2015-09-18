@@ -5,6 +5,8 @@ existing_date <- (Sys.Date()-1)
 
 get_datasets <- function(){
   wikidata_edits <<- download_set("wikidata-edits.tsv")
+  edits_latest <- cbind("Edits" = safe_tail(wikidata_edits$edits, 2))
+  edits_delta <<- diff(edits_latest)
   wikidata_pages <<- download_set("wikidata-pages.tsv")
   wikidata_properties <<- download_set("wikidata-properties.tsv")
   wikidata_active_users <<- download_set("wikidata-active-users.tsv")
@@ -33,6 +35,13 @@ shinyServer(function(input, output) {
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
                    "", "Edits", "Wikidata Edits")
+    })
+    output$editdelta <- renderInfoBox({
+      form_edits <- prettyNum(edits_delta, big.mark=",")
+      infoBox(
+        "Edit Delta from Last Period", paste0(form_edits), icon = icon("arrow-up"),
+        color = "green"
+      )
     })
     output$wikidata_pages_plot <- renderDygraph({
       make_dygraph(wikidata_pages,
