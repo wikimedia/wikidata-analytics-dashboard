@@ -9,12 +9,30 @@ library(toOrdinal)
 library(lubridate)
 library(magrittr)
 
-#Utility functions for handling particularly common tasks
-download_set <- function(location){
-  location <- paste0("http://localhost/", location,
-                     "?ts=", gsub(x = Sys.time(), pattern = "(-| )", replacement = ""))
-  con <- url(location)
-  return(readr::read_delim(con, delim = "\t"))
+data_uri <- "http://wdm-data.wmflabs.org/"
+
+download_set <- function(file, uri = data_uri){
+  out <- tryCatch(
+    {location <- paste0(uri, file,
+                       "?ts=", gsub(x = Sys.time(), pattern = "(-| )", replacement = ""))
+    con <- url(location);
+    readr::read_delim(con, delim = "\t")
+    },
+    warning = function(cond)
+    {message(paste("URL caused a warning:", location))
+      message("Warning message:")
+      message(cond)
+      return(NULL)
+    },
+    error = function(cond)
+    {message(paste("URL does not exist:", location))
+      message("Error message:")
+      message(cond)
+      return(NA)
+    },
+    finally = {}
+    )
+  return(out)
 }
 
 # Takes an untidy (read: dygraph-appropriate) dataset and adds
