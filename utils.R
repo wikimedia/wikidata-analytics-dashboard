@@ -5,11 +5,12 @@ library(xts)
 library(reshape2)
 library(RColorBrewer)
 library(ggplot2)
+library(scales)
 library(toOrdinal)
 library(lubridate)
 library(magrittr)
 
-data_uri <- "http://wdm-data.wmflabs.org/"
+data_uri <- "http://localhost/"
 
 download_set <- function(file, uri = data_uri){
   out <- tryCatch(

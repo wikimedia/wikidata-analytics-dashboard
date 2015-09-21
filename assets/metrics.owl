@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://wikiba.se/metrics#"
+     xml:base="http://wikiba.se/metrics"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://wikiba.se/metrics#"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wikiba.se/metrics#Community_Health -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Community_Health">
+        <rdfs:subClassOf rdf:resource="http://wikiba.se/metrics#KPI"/>
+    </owl:Class>
+    
+
+
+    <!-- http://wikiba.se/metrics#Content -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Content"/>
+    
+
+
+    <!-- http://wikiba.se/metrics#Developer -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Developer"/>
+    
+
+
+    <!-- http://wikiba.se/metrics#Engagement -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Engagement"/>
+    
+
+
+    <!-- http://wikiba.se/metrics#External_Use -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#External_Use">
+        <rdfs:subClassOf rdf:resource="http://wikiba.se/metrics#KPI"/>
+    </owl:Class>
+    
+
+
+    <!-- http://wikiba.se/metrics#Internal_Use -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Internal_Use">
+        <rdfs:subClassOf rdf:resource="http://wikiba.se/metrics#KPI"/>
+    </owl:Class>
+    
+
+
+    <!-- http://wikiba.se/metrics#KPI -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#KPI"/>
+    
+
+
+    <!-- http://wikiba.se/metrics#Partnerships -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Partnerships">
+        <rdfs:subClassOf rdf:resource="http://wikiba.se/metrics#KPI"/>
+    </owl:Class>
+    
+
+
+    <!-- http://wikiba.se/metrics#Quality -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Quality">
+        <rdfs:subClassOf rdf:resource="http://wikiba.se/metrics#KPI"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
+        <rdfs:comment>Total number is reported every two weeks in https://tools.wmflabs.org/wikidata-todo/stats.php (&quot;Statements referenced to Wikipedia&quot;)</rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#number_of_active_editors_who_make_[5,_100]_edits_in_[given_month,_rolling_30_day_window] -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_active_editors_who_make_[5,_100]_edits_in_[given_month,_rolling_30_day_window]">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Community_Health"/>
+        <rdfs:comment>Reported by month in https://stats.wikimedia.org/wikispecial/EN/TablesWikipediaWIKIDATA.htm per longstanding standard definitions. Rolling 30 day window report in https://metrics.wmflabs.org/static/public/dash/ but only for 5 edit threshold</rdfs:comment>
+        <rdfs:comment></rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#number_of_items/statements_contributed_by_[partnership_A,_..._partnership_Z]_in_a_given_month,_broken_down_by_quality,_edited_statements,_setup_length,_community_onboarding_time,_technical_audit,_size_of_institution,_usage_of_data_after_launch -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_items/statements_contributed_by_[partnership_A,_..._partnership_Z]_in_a_given_month,_broken_down_by_quality,_edited_statements,_setup_length,_community_onboarding_time,_technical_audit,_size_of_institution,_usage_of_data_after_launch">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Partnerships"/>
+        <rdfs:comment>Should be fairly straightforward to track once actual partnerships exist and quality/usage measures mature; see https://commons.wikimedia.org/wiki/Commons:Partnerships for pre-existing models in Wikimedia Commons</rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#number_of_queries_by_[non-browser_app_A,_...,_non-browser_app_Z]_in_[given_month,_rolling_30_day_window] -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_queries_by_[non-browser_app_A,_...,_non-browser_app_Z]_in_[given_month,_rolling_30_day_window]">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#External_Use"/>
+        <rdfs:comment>In principle obtainable via Hadoop analysis of logs; application-breakdown can be tricky as we don&apos;t require API keys and user-agents may be unhelpful</rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#percentage/number_of_infoboxes_in_Wikipedia_which_use_(1,_...,_n)_statements_from_Wikidata_as_of_a_given_month -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage/number_of_infoboxes_in_Wikipedia_which_use_(1,_...,_n)_statements_from_Wikidata_as_of_a_given_month">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Internal_Use"/>
+        <rdfs:comment>Depends on usage tracking support for items, which is being gradually rolled out as of May 2015, see https://phabricator.wikimedia.org/T49288</rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#percentage/number_of_pages_in_Wikimedia_wikis_which_use_[1,_...,_n]_statements_from_Wikidata_as_of_a_given_month -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage/number_of_pages_in_Wikimedia_wikis_which_use_[1,_...,_n]_statements_from_Wikidata_as_of_a_given_month">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Internal_Use"/>
+        <rdfs:comment>Depends on usage tracking support for items, which is being gradually rolled out as of May 2015, see https://phabricator.wikimedia.org/T49288</rdfs:comment>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://wikiba.se/metrics#percentage_of_items_with_a_quality_score_according_to_[scoring_algorithm_A,_...,_scoring_algorithm_Z]_higher_than_[0,_...,_1] -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_items_with_a_quality_score_according_to_[scoring_algorithm_A,_...,_scoring_algorithm_Z]_higher_than_[0,_...,_1]">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
+        <rdfs:comment>Experimental Wikipedia-centric work ongoing at https://meta.wikimedia.org/wiki/Research:Revision_scoring_as_a_service , Wikidatan User:Ladsgroup is peripherally involved to assess value for fighting spam on Wikidata</rdfs:comment>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
+

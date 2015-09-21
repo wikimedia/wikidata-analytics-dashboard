@@ -5,14 +5,13 @@ existing_date <- (Sys.Date()-1)
 
 get_datasets <- function(){
   wikidata_edits <<- download_set("wikidata-edits.tsv")
-  edits_latest <- cbind("Edits" = safe_tail(wikidata_edits$edits, 2))
-  edits_delta <<- diff(edits_latest)
-  wikidata_pages <<- download_set("wikidata-pages.tsv")
-  wikidata_properties <<- download_set("wikidata-properties.tsv")
   wikidata_active_users <<- download_set("wikidata-active-users.tsv")
   wikidata_social_media <<- download_set("wikidata-social-media.tsv")
   wikidata_mailing_lists <<-download_set("wikidata_mailing_lists.tsv")
   wikidata_content_overview <<- download_set("wikidata-content-overview.tsv")
+  wikidata_pages <<- download_set("wikidata-pages.tsv")
+  wikidata_content_items <<- download_set("wikidata_content_items.tsv")
+  wikidata_properties <<- download_set("wikidata-properties.tsv")
   wikidata_content_refstmts <<-download_set("wikidata-content-refstmts.tsv")
   wikidata_content_refstmts_wikipedia <<- download_set("wikidata-content-refstmts-wikipedia.tsv")
   wikidata_content_refstmts_other <<- download_set("wikidata_content_refstmts_other.tsv")
@@ -37,29 +36,20 @@ shinyServer(function(input, output) {
                    "", "Edits", "Wikidata Edits")
     })
     output$editdelta <- renderInfoBox({
+      edits_period <- tail(wikidata_edits$date, 2)
+      period_last <- format(edits_period[2])
+      period_current <- format(edits_period[1])
+      edits_latest <- cbind("Edits" = safe_tail(wikidata_edits$edits, 2))
+      edits_delta <<- diff(edits_latest)
+      edits_last_total <- edits_latest[1]
+      edits_delta_percentage <- percent(edits_delta/edits_last_total)
       form_edits <- prettyNum(edits_delta, big.mark=",")
-      infoBox(
-        "Edit Delta from Last Period", paste0(form_edits), icon = icon("arrow-up"),
+      box_title <- paste0("Edit Delta")
+      box_subtitle <- paste0(period_current, " to ", period_last)
+      box_value <- paste0(form_edits, " - ", edits_delta_percentage)
+      infoBox(box_title, box_value, box_subtitle, icon = icon("arrow-up"),
         color = "green"
       )
-    })
-    output$wikidata_pages_plot <- renderDygraph({
-      make_dygraph(wikidata_pages,
-                   "", "Pages", "Wikidata Pages", legend_name = "pages")
-    })
-    output$wikidata_properties_plot <- renderDygraph({
-      wikidata_properties<- xts(wikidata_properties[, -1], wikidata_properties[, 1])
-      return(dygraph(wikidata_properties,
-                     main = "Wikidata Properties",
-                     ylab = "Properties") %>%
-               dyLegend(width = 400, show = "always") %>%
-               dySeries("V1", label = "properties") %>%
-               dyOptions(useDataTimezone = TRUE,
-                         labelsKMB = TRUE,
-                         connectSeparatedPoints = TRUE,
-                         strokeWidth = 3,
-                         colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
-               dyCSS(css = "./assets/css/custom.css"))
     })
     output$wikidata_active_users_plot <- renderDygraph({
       make_dygraph(wikidata_active_users,
@@ -87,10 +77,41 @@ shinyServer(function(input, output) {
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
                dyCSS(css = "./assets/css/custom.css"))
     })
+    output$wikidata_pages_plot <- renderDygraph({
+      make_dygraph(wikidata_pages,
+                   "", "Pages", "Wikidata Pages", legend_name = "pages")
+    })
+    output$wikidata_content_items_plot <- renderDygraph({
+      wikidata_content_items<- xts(wikidata_content_items[, -1], wikidata_content_items[, 1])
+      return(dygraph(wikidata_content_items,
+                     main = "Wikidata Items",
+                     ylab = "Items") %>%
+               dyLegend(width = 400, show = "always") %>%
+               dySeries("V1", label = "Items") %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 3,
+                         colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
+               dyCSS(css = "./assets/css/custom.css"))
+    })
+    output$wikidata_properties_plot <- renderDygraph({
+      wikidata_properties<- xts(wikidata_properties[, -1], wikidata_properties[, 1])
+      return(dygraph(wikidata_properties,
+                     main = "Wikidata Properties",
+                     ylab = "Properties") %>%
+               dyLegend(width = 400, show = "always") %>%
+               dySeries("V1", label = "properties") %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         connectSeparatedPoints = TRUE,
+                         strokeWidth = 3,
+                         colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
+               dyCSS(css = "./assets/css/custom.css"))
+    })
     output$wikidata_content_overview_plot <- renderDygraph({
       wikidata_content_overview<- xts(wikidata_content_overview[, -1], wikidata_content_overview[, 1])
       return(dygraph(wikidata_content_overview,
-                     main = "Wikidata Content Overview",
+                     main = "Wikidata References Overview",
                      ylab = "Statements") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
@@ -197,7 +218,7 @@ shinyServer(function(input, output) {
     output$wikidata_content_wikilinks_item_plot <- renderDygraph({
     wikidata_content_wikilinks_item<- xts(wikidata_content_wikilinks_item[, -1], wikidata_content_wikilinks_item[, 1])
     return(dygraph(wikidata_content_wikilinks_item,
-                   main = "Wikilinks per Item",
+                   main = "Wiki(m|p)edia links per item",
                    ylab = "Links") %>%
              dyLegend(width = 400, show = "always", labelsDiv = "legend_wikilinks_item", labelsSeparateLines = TRUE) %>%
              dyOptions(useDataTimezone = TRUE,

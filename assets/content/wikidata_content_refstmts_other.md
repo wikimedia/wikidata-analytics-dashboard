@@ -1,4 +1,4 @@
-Statements referenced to other sources
+Referenced Statements to other sources
 =======
 
 * Type: Aggregate

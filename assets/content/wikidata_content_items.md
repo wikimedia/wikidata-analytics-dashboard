@@ -1,4 +1,4 @@
-Referenced Statements to Wikipedia
+Wikidata Items
 =======
 
 * Type: Aggregate
