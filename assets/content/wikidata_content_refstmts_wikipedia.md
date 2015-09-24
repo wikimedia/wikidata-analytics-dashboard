@@ -1,8 +1,0 @@
-Referenced Statements to Wikipedia
-=======
-
-* Type: Aggregate
-* Source:
-* Update Interval:
-* Reliability:
-* Description:

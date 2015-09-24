@@ -24,13 +24,21 @@ get_datasets <- function(){
   return(invisible())
 }
 
+get_rdf_objects <- function(){
+  engagement_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Engagement>")
+  internal_use_objs <<- get_rdf_individuals("<http://wikiba.se/metrics#Internal_Use>")
+  return(invisible())
+}
+
 shinyServer(function(input, output) {
 
     if(Sys.Date() != existing_date){
       get_datasets()
+      get_rdf_objects()
       existing_date <<- Sys.Date()
     }
 
+    # http://wikiba.se/metrics#Edits
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
                    "", "Edits", "Wikidata Edits")
@@ -40,7 +48,7 @@ shinyServer(function(input, output) {
       period_last <- format(edits_period[2])
       period_current <- format(edits_period[1])
       edits_latest <- cbind("Edits" = safe_tail(wikidata_edits$edits, 2))
-      edits_delta <<- diff(edits_latest)
+      edits_delta <- diff(edits_latest)
       edits_last_total <- edits_latest[1]
       edits_delta_percentage <- percent(edits_delta/edits_last_total)
       form_edits <- prettyNum(edits_delta, big.mark=",")
@@ -51,10 +59,27 @@ shinyServer(function(input, output) {
         color = "green"
       )
     })
+    output$metric_meta_edits <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = engagement_obj[1], engagement_obj[1]))
+    })
+    output$metric_meta_edits_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"))
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+
+    # http://wikiba.se/metrics#Active_Users
     output$wikidata_active_users_plot <- renderDygraph({
       make_dygraph(wikidata_active_users,
                    "", "Active Users", "Wikidata Active Users", legend_name = "active users")
     })
+    output$metric_meta_active_users <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = engagement_obj[2], engagement_obj[2]))
+    })
+    output$metric_meta_active_users_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"))
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+
     output$wikidata_social_media_plot <- renderDygraph({
       wikidata_social_media <- xts(wikidata_social_media[, -1], wikidata_social_media[, 1])
       return(dygraph(wikidata_social_media,
@@ -226,5 +251,51 @@ shinyServer(function(input, output) {
                        stackedGraph = TRUE,
                        plotter = barChartPlotter) %>%
              dyCSS(css = "./assets/css/custom.css"))
+    })
+    output$metric_meta_quality1 <- renderInfoBox({
+      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month>")
+      box_title <- paste0("Meta")
+      box_value <- paste0(metric_desc)
+      box(box_value, status = "info", width = 6, collapsible = TRUE)
+    })
+    output$metric_meta_quality2 <- renderInfoBox({
+      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#percentage_of_items_with_a_quality_score_according_to_scoring_algorithm_A,_...,_scoring_algorithm_Z_higher_than_0,_...,_1>")
+      box_title <- paste0("Meta")
+      box_value <- paste0(metric_desc)
+      box(status = "info", box_value)
+    })
+    output$metric_meta_community_health <- renderInfoBox({
+      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_active_editors_who_make_5,_100_edits_in_given_month,_rolling_30_day_window>")
+      box_title <- paste0("Meta")
+      box_value <- paste0(metric_desc)
+      box(width = 6, status = "primary", box_value)
+    })
+    output$metric_meta_partnerships <- renderInfoBox({
+      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_items_or_statements_contributed_by_partnership_A,_..._partnership_Z_in_a_given_month,_broken_down_by_quality,_edited_statements,_setup_length,_community_onboarding_time,_technical_audit,_size_of_institution,_usage_of_data_after_launch>")
+      box_title <- paste0("Meta")
+      box_value <- paste0(metric_desc)
+      box(width = 6, status = "primary", box_value)
+    })
+    output$metric_meta_external_use <- renderInfoBox({
+      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_queries_by_non-browser_app_A,_...,_non-browser_app_Z_in_given_month,_rolling_30_day_window>")
+      box_title <- paste0("Meta")
+      box_value <- paste0(metric_desc)
+      box(width = 6, status = "primary", box_value)
+    })
+
+    # http://wikiba.se/metrics#Internal_Use
+    output$metric_meta_internal_use_objects1 <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_objs[1], internal_use_objs[1]))
+    })
+    output$metric_meta_internal_use1 <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",internal_use_objs[1],">"))
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+    })
+    output$metric_meta_internal_use_objects2 <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_objs[2], internal_use_objs[2]))
+    })
+    output$metric_meta_internal_use2 <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",internal_use_objs[2],">"))
+      box(title = "Comment",width = 6, status = "info", metric_desc[1])
     })
 })

@@ -9,6 +9,7 @@ library(scales)
 library(toOrdinal)
 library(lubridate)
 library(magrittr)
+library(rrdf)
 
 data_uri <- "http://localhost/"
 
@@ -223,3 +224,15 @@ barChartPlotter <- "function barChartPlotter(e) {
                    bar_width, y_bottom - p.canvasy);
   }
 }"
+
+get_rdf_metadata <- function(subj) {
+  doc = load.rdf("/srv/dashboards/shiny-server/wdm/assets/metrics.owl")
+  comment = sparql.rdf(doc, paste("SELECT DISTINCT ?o WHERE { ",subj," ?p ?o}"))
+  return(comment)
+}
+
+get_rdf_individuals <- function(obj) {
+  doc = load.rdf("/srv/dashboards/shiny-server/wdm/assets/metrics.owl")
+  classes= sparql.rdf(doc, paste("SELECT ?s WHERE { ?s ?p ",obj,"}"))
+  return(classes)
+}
