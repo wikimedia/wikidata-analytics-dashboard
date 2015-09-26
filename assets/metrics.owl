@@ -30,6 +30,12 @@
 
 
 
+    <!-- http://wikiba.se/metrics#dataSourceFile -->
+
+    <owl:AnnotationProperty rdf:about="http://wikiba.se/metrics#dataSourceFile"/>
+
+
+
     <!-- http://wikiba.se/metrics#updateFrequency -->
 
     <owl:AnnotationProperty rdf:about="http://wikiba.se/metrics#updateFrequency"/>
@@ -144,6 +150,7 @@
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
         <updateFrequency>Monthly</updateFrequency>
         <rdfs:isDefinedBy># of editors who did an edit in the last 30 days</rdfs:isDefinedBy>
+        <dataSourceFile>wikidata_eng_active_users.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -153,6 +160,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Descriptions_per_Item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
+        <dataSourceFile>wikidata_content_descriptions_item.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -163,6 +171,7 @@
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
         <updateFrequency>Monthly</updateFrequency>
         <rdfs:isDefinedBy># of Edits on wikidata</rdfs:isDefinedBy>
+        <dataSourceFile>wikidata_eng_edits.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -190,6 +199,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Items">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
+        <dataSourceFile>wikidata_content_items.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -207,6 +217,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Pages">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_pages.tsv</dataSourceFile>
         <rdfs:isDefinedBy># of pages created on wikidata</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
@@ -217,6 +228,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Properties">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_properties.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -226,6 +238,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_refstmts.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -236,6 +249,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_to_Other_Sources_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
+        <dataSourceFile>wikidata_content_refstmts_other.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -244,6 +258,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_to_Wikipedia_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_refstmts_wikipedia.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -254,6 +269,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#References_Overview">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
+        <dataSourceFile>wikidata_content_references_overview.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -262,6 +278,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#References_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_references.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -272,6 +289,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Statement_Ranks">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
+        <dataSourceFile>wikidata_content_statement_ranks.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -280,6 +298,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Statements_per_Item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_statement_item.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -299,6 +318,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Wikimedia_links_per_item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <dataSourceFile>wikidata_content_wikimedia_links_item.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -415,4 +435,3 @@
 
 
 <!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
-

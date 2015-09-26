@@ -1,39 +1,15 @@
 ## Version 0.2.0
+source("config.R")
+source("model.R")
 source("utils.R")
 
 existing_date <- (Sys.Date()-1)
-
-get_datasets <- function(){
-  wikidata_edits <<- download_set("wikidata-edits.tsv")
-  wikidata_active_users <<- download_set("wikidata-active-users.tsv")
-  wikidata_social_media <<- download_set("wikidata-social-media.tsv")
-  wikidata_mailing_lists <<-download_set("wikidata_mailing_lists.tsv")
-  wikidata_content_overview <<- download_set("wikidata-content-overview.tsv")
-  wikidata_pages <<- download_set("wikidata-pages.tsv")
-  wikidata_content_items <<- download_set("wikidata_content_items.tsv")
-  wikidata_properties <<- download_set("wikidata-properties.tsv")
-  wikidata_content_refstmts <<-download_set("wikidata-content-refstmts.tsv")
-  wikidata_content_refstmts_wikipedia <<- download_set("wikidata-content-refstmts-wikipedia.tsv")
-  wikidata_content_refstmts_other <<- download_set("wikidata_content_refstmts_other.tsv")
-  wikidata_content_references <<-download_set("wikidata_content_references.tsv")
-  wikidata_content_statement_ranks <<- download_set("wikidata_content_statement_ranks.tsv")
-  wikidata_content_statement_item <<- download_set("wikidata_content_statement_item.tsv")
-  wikidata_content_labels_item <<- download_set("wikidata_content_labels_item.tsv")
-  wikidata_content_descriptions_item <<- download_set("wikidata_content_descriptions_item.tsv")
-  wikidata_content_wikilinks_item <<- download_set("wikidata_content_wikilinks_item.tsv")
-  return(invisible())
-}
-
-get_rdf_objects <- function(){
-  engagement_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Engagement>")
-  internal_use_objs <<- get_rdf_individuals("<http://wikiba.se/metrics#Internal_Use>")
-  return(invisible())
-}
 
 shinyServer(function(input, output) {
 
     if(Sys.Date() != existing_date){
       get_datasets()
+      load_rdf_model()
       get_rdf_objects()
       existing_date <<- Sys.Date()
     }
@@ -47,7 +23,7 @@ shinyServer(function(input, output) {
       edits_period <- tail(wikidata_edits$date, 2)
       period_last <- format(edits_period[2])
       period_current <- format(edits_period[1])
-      edits_latest <- cbind("Edits" = safe_tail(wikidata_edits$edits, 2))
+      edits_latest <- cbind("Edits" = tail(wikidata_edits$edits, 2))
       edits_delta <- diff(edits_latest)
       edits_last_total <- edits_latest[1]
       edits_delta_percentage <- percent(edits_delta/edits_last_total)
@@ -60,26 +36,33 @@ shinyServer(function(input, output) {
       )
     })
     output$metric_meta_edits <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = engagement_obj[1], engagement_obj[1]))
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = engagement_obj[1], engagement_obj[1]))
+    })
+    output$metric_meta_edits_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
     })
     output$metric_meta_edits_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"))
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
       box(title = "Definition", width = 6, status = "info", metric_desc[1])
     })
-
     # http://wikiba.se/metrics#Active_Users
     output$wikidata_active_users_plot <- renderDygraph({
       make_dygraph(wikidata_active_users,
                    "", "Active Users", "Wikidata Active Users", legend_name = "active users")
     })
     output$metric_meta_active_users <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = engagement_obj[2], engagement_obj[2]))
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = engagement_obj[2], engagement_obj[2]))
+    })
+    output$metric_meta_active_users_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
     })
     output$metric_meta_active_users_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"))
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
       box(title = "Definition", width = 6, status = "info", metric_desc[1])
     })
-
+    # http://wikiba.se/metrics#Social_Media
     output$wikidata_social_media_plot <- renderDygraph({
       wikidata_social_media <- xts(wikidata_social_media[, -1], wikidata_social_media[, 1])
       return(dygraph(wikidata_social_media,
@@ -89,8 +72,9 @@ shinyServer(function(input, output) {
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Mailing_Lists
     output$wikidata_mailing_lists_plot <- renderDygraph({
       wikidata_mailing_lists <- xts(wikidata_mailing_lists[, -1], wikidata_mailing_lists[, 1])
       return(dygraph(wikidata_mailing_lists,
@@ -100,12 +84,25 @@ shinyServer(function(input, output) {
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Pages
     output$wikidata_pages_plot <- renderDygraph({
       make_dygraph(wikidata_pages,
                    "", "Pages", "Wikidata Pages", legend_name = "pages")
     })
+    output$metric_meta_pages <- renderUI({
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[13], content_obj[13]))
+    })
+    output$metric_meta_pages_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+    })
+    output$metric_meta_pages_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#Items
     output$wikidata_content_items_plot <- renderDygraph({
       wikidata_content_items<- xts(wikidata_content_items[, -1], wikidata_content_items[, 1])
       return(dygraph(wikidata_content_items,
@@ -117,8 +114,20 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          strokeWidth = 3,
                          colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    output$metric_meta_items <- renderUI({
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[5], content_obj[5]))
+    })
+    output$metric_meta_items_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+    })
+    output$metric_meta_items_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#Properties
     output$wikidata_properties_plot <- renderDygraph({
       wikidata_properties<- xts(wikidata_properties[, -1], wikidata_properties[, 1])
       return(dygraph(wikidata_properties,
@@ -131,19 +140,43 @@ shinyServer(function(input, output) {
                          connectSeparatedPoints = TRUE,
                          strokeWidth = 3,
                          colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
-    output$wikidata_content_overview_plot <- renderDygraph({
-      wikidata_content_overview<- xts(wikidata_content_overview[, -1], wikidata_content_overview[, 1])
-      return(dygraph(wikidata_content_overview,
+    output$metric_meta_properties <- renderUI({
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[9], content_obj[9]))
+    })
+    output$metric_meta_properties_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+    })
+    output$metric_meta_properties_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#References_Overview
+    output$wikidata_references_overview_plot <- renderDygraph({
+      wikidata_references_overview<- xts(wikidata_references_overview[, -1], wikidata_references_overview[, 1])
+      return(dygraph(wikidata_references_overview,
                      main = "Wikidata References Overview",
-                     ylab = "Statements") %>%
+                     ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    output$metric_meta_references_overview <- renderUI({
+      box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[1], content_obj[1]))
+    })
+    output$metric_meta_references_overview_datasource <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://wikiba.se/metrics#dataSourceFile>")
+      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+    })
+    output$metric_meta_references_overview_notes <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#Referenced_Statements_by_Type
     output$wikidata_content_refstmts_plot <- renderDygraph({
       wikidata_content_refstmts<- xts(wikidata_content_refstmts[, -1], wikidata_content_refstmts[, 1])
       return(dygraph(wikidata_content_refstmts,
@@ -154,7 +187,7 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
     output$wikidata_content_refstmts_wikipedia_plot <- renderDygraph({
       wikidata_content_refstmts_wikipedia<- xts(wikidata_content_refstmts_wikipedia[, -1], wikidata_content_refstmts_wikipedia[, 1])
@@ -166,7 +199,7 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
     output$wikidata_content_refstmts_other_plot <- renderDygraph({
       wikidata_content_refstmts_other<- xts(wikidata_content_refstmts_other[, -1], wikidata_content_refstmts_other[, 1])
@@ -178,8 +211,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#References_by_Type
     output$wikidata_content_references_plot <- renderDygraph({
       wikidata_content_references<- xts(wikidata_content_references[, -1], wikidata_content_references[, 1])
       return(dygraph(wikidata_content_references,
@@ -190,8 +224,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Statement_Ranks
     output$wikidata_content_statement_ranks_plot <- renderDygraph({
       wikidata_content_statement_ranks<- xts(wikidata_content_statement_ranks[, -1], wikidata_content_statement_ranks[, 1])
       return(dygraph(wikidata_content_statement_ranks,
@@ -202,8 +237,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Statements_per_Item
     output$wikidata_content_statement_item_plot <- renderDygraph({
       wikidata_content_statement_item<- xts(wikidata_content_statement_item[, -1], wikidata_content_statement_item[, 1])
       return(dygraph(wikidata_content_statement_item,
@@ -214,8 +250,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Labels_per_Item
     output$wikidata_content_labels_item_plot <- renderDygraph({
       wikidata_content_labels_item<- xts(wikidata_content_labels_item[, -1], wikidata_content_labels_item[, 1])
       return(dygraph(wikidata_content_labels_item,
@@ -226,8 +263,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Descriptions_per_Item
     output$wikidata_content_descriptions_item_plot <- renderDygraph({
       wikidata_content_descriptions_item<- xts(wikidata_content_descriptions_item[, -1], wikidata_content_descriptions_item[, 1])
       return(dygraph(wikidata_content_descriptions_item,
@@ -238,8 +276,9 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = "./assets/css/custom.css"))
+               dyCSS(css = custom_css))
     })
+    # http://wikiba.se/metrics#Wikimedia_links_per_item
     output$wikidata_content_wikilinks_item_plot <- renderDygraph({
     wikidata_content_wikilinks_item<- xts(wikidata_content_wikilinks_item[, -1], wikidata_content_wikilinks_item[, 1])
     return(dygraph(wikidata_content_wikilinks_item,
@@ -250,52 +289,61 @@ shinyServer(function(input, output) {
                        labelsKMB = TRUE,
                        stackedGraph = TRUE,
                        plotter = barChartPlotter) %>%
-             dyCSS(css = "./assets/css/custom.css"))
+             dyCSS(css = custom_css))
     })
-    output$metric_meta_quality1 <- renderInfoBox({
-      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month>")
-      box_title <- paste0("Meta")
-      box_value <- paste0(metric_desc)
-      box(box_value, status = "info", width = 6, collapsible = TRUE)
+    # http://wikiba.se/metrics#Community_Health
+    output$metric_meta_community_health_objects <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = community_health_obj[1], community_health_obj[1]))
     })
-    output$metric_meta_quality2 <- renderInfoBox({
-      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#percentage_of_items_with_a_quality_score_according_to_scoring_algorithm_A,_...,_scoring_algorithm_Z_higher_than_0,_...,_1>")
-      box_title <- paste0("Meta")
-      box_value <- paste0(metric_desc)
-      box(status = "info", box_value)
+    output$metric_meta_community_health <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",community_health_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
-    output$metric_meta_community_health <- renderInfoBox({
-      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_active_editors_who_make_5,_100_edits_in_given_month,_rolling_30_day_window>")
-      box_title <- paste0("Meta")
-      box_value <- paste0(metric_desc)
-      box(width = 6, status = "primary", box_value)
+    # http://wikiba.se/metrics#Quality
+    output$metric_meta_quality_objects1 <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = quality_obj[1], quality_obj[1]))
     })
-    output$metric_meta_partnerships <- renderInfoBox({
-      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_items_or_statements_contributed_by_partnership_A,_..._partnership_Z_in_a_given_month,_broken_down_by_quality,_edited_statements,_setup_length,_community_onboarding_time,_technical_audit,_size_of_institution,_usage_of_data_after_launch>")
-      box_title <- paste0("Meta")
-      box_value <- paste0(metric_desc)
-      box(width = 6, status = "primary", box_value)
+    output$metric_meta_quality1 <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",quality_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
-    output$metric_meta_external_use <- renderInfoBox({
-      metric_desc <- get_rdf_metadata("<http://wikiba.se/metrics#number_of_queries_by_non-browser_app_A,_...,_non-browser_app_Z_in_given_month,_rolling_30_day_window>")
-      box_title <- paste0("Meta")
-      box_value <- paste0(metric_desc)
-      box(width = 6, status = "primary", box_value)
+    output$metric_meta_quality_objects2 <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = quality_obj[2], quality_obj[2]))
+    })
+    output$metric_meta_quality2 <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment",width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#Partnerships
+    output$metric_meta_partnerships_objects <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = partnerships_obj[1], partnerships_obj[1]))
+    })
+    output$metric_meta_partnerships <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",partnerships_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+    })
+    # http://wikiba.se/metrics#External_Use
+    output$metric_meta_external_use_objects <- renderUI({
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = external_use_obj[1], external_use_obj[1]))
+    })
+    output$metric_meta_external_use <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",external_use_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
 
     # http://wikiba.se/metrics#Internal_Use
     output$metric_meta_internal_use_objects1 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_objs[1], internal_use_objs[1]))
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_obj[1], internal_use_obj[1]))
     })
     output$metric_meta_internal_use1 <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",internal_use_objs[1],">"))
+      metric_desc <- get_rdf_metadata(paste0("<",internal_use_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
       box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     output$metric_meta_internal_use_objects2 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_objs[2], internal_use_objs[2]))
+      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_obj[2], internal_use_obj[2]))
     })
     output$metric_meta_internal_use2 <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",internal_use_objs[2],">"))
+      metric_desc <- get_rdf_metadata(paste0("<",internal_use_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
       box(title = "Comment",width = 6, status = "info", metric_desc[1])
     })
 })

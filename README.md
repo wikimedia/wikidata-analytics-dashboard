@@ -50,4 +50,3 @@ $ R
 > library(shiny)
 > runApp(launch.browser = 0)
 ```
-

@@ -1,18 +1,3 @@
-#Dependent libs
-library(plyr)
-library(readr)
-library(xts)
-library(reshape2)
-library(RColorBrewer)
-library(ggplot2)
-library(scales)
-library(toOrdinal)
-library(lubridate)
-library(magrittr)
-library(rrdf)
-
-data_uri <- "http://localhost/"
-
 download_set <- function(file, uri = data_uri){
   out <- tryCatch(
     {location <- paste0(uri, file,
@@ -225,14 +210,13 @@ barChartPlotter <- "function barChartPlotter(e) {
   }
 }"
 
-get_rdf_metadata <- function(subj) {
-  doc = load.rdf("/srv/dashboards/shiny-server/wdm/assets/metrics.owl")
-  comment = sparql.rdf(doc, paste("SELECT DISTINCT ?o WHERE { ",subj," ?p ?o}"))
+get_rdf_metadata <- function(subj, pred) {
+  comment = sparql.rdf(metrics_model, paste("SELECT DISTINCT ?o WHERE { ",subj, pred," ?o}"))
   return(comment)
 }
 
 get_rdf_individuals <- function(obj) {
-  doc = load.rdf("/srv/dashboards/shiny-server/wdm/assets/metrics.owl")
-  classes= sparql.rdf(doc, paste("SELECT ?s WHERE { ?s ?p ",obj,"}"))
-  return(classes)
+  individuals = sparql.rdf(metrics_model, paste("SELECT ?s WHERE { ?s ?p ",obj,"}"))
+  return(individuals)
 }
+

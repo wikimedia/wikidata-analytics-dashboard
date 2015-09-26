@@ -22,7 +22,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Pages", tabName = "wikidata_pages"),
              menuSubItem(text = "Items", tabName = "wikidata_items"),
              menuSubItem(text = "Properties", tabName = "wikidata_properties"),
-             menuSubItem(text = "References", tabName = "wikidata_content_overview"),
+             menuSubItem(text = "References Overview", tabName = "wikidata_references_overview"),
              menuSubItem(text = "Referenced Statements by Type", tabName = "wikidata_content_refstmts"),
              menuSubItem(text = "References by Type", tabName = "wikidata_content_references"),
              menuSubItem(text = "Statement ranks", tabName = "wikidata_content_statement_ranks"),
@@ -50,20 +50,18 @@ body <- dashboardBody(
             dygraphOutput("wikidata_edits_plot"),
             tags$br(),
             uiOutput("metric_meta_edits"),
+            uiOutput("metric_meta_edits_datasource"),
             tags$br(),
-            uiOutput("metric_meta_edits_notes")),
-    tabItem(tabName = "wikidata_pages",
-            dygraphOutput("wikidata_pages_plot")),
-    tabItem(tabName = "wikidata_items",
-            dygraphOutput("wikidata_content_items_plot")),
-    tabItem(tabName = "wikidata_properties",
-            dygraphOutput("wikidata_properties_plot")),
+            uiOutput("metric_meta_edits_notes"),
+            tags$br()),
     tabItem(tabName = "wikidata_active_users",
             dygraphOutput("wikidata_active_users_plot"),
             tags$br(),
             uiOutput("metric_meta_active_users"),
+            uiOutput("metric_meta_active_users_datasource"),
             tags$br(),
-            uiOutput("metric_meta_active_users_notes")),
+            uiOutput("metric_meta_active_users_notes"),
+            tags$br()),
     tabItem(tabName = "wikidata_social_media",
             dygraphOutput("wikidata_social_media_plot"),
             tags$br(),
@@ -71,10 +69,40 @@ body <- dashboardBody(
     tabItem(tabName = "wikidata_mailing_lists",
             dygraphOutput("wikidata_mailing_lists_plot"),
             tags$br(),
-            htmlOutput("legend_lists")),
-    tabItem(tabName = "wikidata_content_overview",
-            dygraphOutput("wikidata_content_overview_plot"),
-            htmlOutput("legend")),
+            htmlOutput("legend_lists"),
+            tags$br()),
+    tabItem(tabName = "wikidata_pages",
+            dygraphOutput("wikidata_pages_plot"),
+            tags$br(),
+            uiOutput("metric_meta_pages"),
+            uiOutput("metric_meta_pages_datasource"),
+            tags$br(),
+            uiOutput("metric_meta_pages_notes"),
+            tags$br()),
+    tabItem(tabName = "wikidata_items",
+            dygraphOutput("wikidata_content_items_plot"),
+            tags$br(),
+            uiOutput("metric_meta_items"),
+            uiOutput("metric_meta_items_datasource"),
+            tags$br(),
+            uiOutput("metric_meta_items_notes"),
+            tags$br()),
+    tabItem(tabName = "wikidata_properties",
+            dygraphOutput("wikidata_properties_plot"),
+            tags$br(),
+            uiOutput("metric_meta_properties"),
+            uiOutput("metric_meta_properties_datasource"),
+            tags$br(),
+            uiOutput("metric_meta_properties_notes")),
+    tabItem(tabName = "wikidata_references_overview",
+            dygraphOutput("wikidata_references_overview_plot"),
+            htmlOutput("legend"),
+            tags$br(),
+            uiOutput("metric_meta_references_overview"),
+            uiOutput("metric_meta_references_overview_datasource"),
+            tags$br(),
+            uiOutput("metric_meta_references_overview_notes"),
+            tags$br()),
     tabItem(tabName = "wikidata_content_refstmts",
             dygraphOutput("wikidata_content_refstmts_plot"),
             htmlOutput("legend_refstmts"),
@@ -101,25 +129,44 @@ body <- dashboardBody(
             dygraphOutput("wikidata_content_wikilinks_item_plot"),
             htmlOutput("legend_wikilinks_item")),
     tabItem(tabName = "wikidata_community_health",
-            tags$br(),
-            fluidRow(column(width = 6,
-              uiOutput("metric_meta_community_health")
-            ))),
-    tabItem(tabName = "wikidata_quality",
-            tags$br(),
-            fluidRow(column(width = 6,
-            uiOutput("metric_meta_quality1"),
-            tags$br(),
-            uiOutput("metric_meta_quality2")))),
-    tabItem(tabName = "wikidata_partnerships",
+            fluidRow(
+              uiOutput("metric_meta_community_health_objects")
+            ),
             tags$br(),
             fluidRow(
-              infoBoxOutput("metric_meta_partnerships")
+              uiOutput("metric_meta_community_health")
+            )),
+    tabItem(tabName = "wikidata_quality",
+            fluidRow(
+              uiOutput("metric_meta_quality_objects1")
+            ),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_quality1")
+            ),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_quality_objects2")
+            ),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_quality2")
+            )),
+    tabItem(tabName = "wikidata_partnerships",
+            fluidRow(
+              uiOutput("metric_meta_partnerships_objects")
+            ),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_partnerships")
             )),
     tabItem(tabName = "wikidata_external_use",
+            fluidRow(
+              uiOutput("metric_meta_external_use_objects")
+            ),
             tags$br(),
             fluidRow(
-              infoBoxOutput("metric_meta_external_use")
+              uiOutput("metric_meta_external_use")
             )),
     tabItem(tabName = "wikidata_internal_use",
             fluidRow(
