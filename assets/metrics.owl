@@ -133,12 +133,6 @@
 
 
 
-    <!-- http://wikiba.se/metrics#dataSource -->
-
-    <owl:Class rdf:about="http://wikiba.se/metrics#dataSource"/>
-
-
-
     <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -381,7 +375,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
         <rdfs:seeAlso rdf:datatype="&xsd;anyURI">https://tools.wmflabs.org/wikidata-todo/stats.php</rdfs:seeAlso>
-        <rdfs:comment>Total number is reported every two weeks in https://tools.wmflabs.org/wikidata-todo/stats.php (&quot;Statements referenced to other sources&quot;)</rdfs:comment>
+        <rdfs:comment>Total number is reported every two weeks in &quot;Statements referenced to other sources&quot;</rdfs:comment>
     </owl:NamedIndividual>
 
 
@@ -390,7 +384,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_active_editors_who_make_5,_100_edits_in_given_month,_rolling_30_day_window">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Community_Health"/>
-        <rdfs:comment>Reported by month in https://stats.wikimedia.org/wikispecial/EN/TablesWikipediaWIKIDATA.htm per longstanding standard definitions. Rolling 30 day window report in https://metrics.wmflabs.org/static/public/dash/ but only for 5 edit threshold</rdfs:comment>
+        <rdfs:seeAlso>https://stats.wikimedia.org/wikispecial/EN/TablesWikipediaWIKIDATA.htm</rdfs:seeAlso>
+        <rdfs:comment>Reported by month in &quot;Statistics Wikidata&quot; per longstanding standard definitions.</rdfs:comment>
     </owl:NamedIndividual>
 
 

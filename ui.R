@@ -13,12 +13,14 @@ sidebar <- dashboardSidebar(
     tags$script(src = "app-options.js")
   ),
   sidebarMenu(
-    menuItem(text = "Engagement",
+    id = "tabs",
+    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem(text = "Engagement", icon = icon("eye"),
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
              menuSubItem(text = "Active Users", tabName = "wikidata_active_users"),
              menuSubItem(text = "Social Media", tabName = "wikidata_social_media"),
              menuSubItem(text = "Mailing Lists", tabName = "wikidata_mailing_lists")),
-    menuItem(text = "Content",
+    menuItem(text = "Content", icon = icon("cubes"),
              menuSubItem(text = "Pages", tabName = "wikidata_pages"),
              menuSubItem(text = "Items", tabName = "wikidata_items"),
              menuSubItem(text = "Properties", tabName = "wikidata_properties"),
@@ -30,7 +32,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Labels per item", tabName = "wikidata_content_labels_item"),
              menuSubItem(text = "Descriptions per item", tabName = "wikidata_content_descriptions_item"),
              menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item")),
-    menuItem(text = "KPI",
+    menuItem(text = "KPI", icon = icon("trophy"),
              menuSubItem(text = "Community Health", tabName = "wikidata_community_health"),
              menuSubItem(text = "Quality", tabName = "wikidata_quality"),
              menuSubItem(text = "Partnerships", tabName = "wikidata_partnerships"),
@@ -43,6 +45,9 @@ sidebar <- dashboardSidebar(
 #Body elements for the visualisations.
 body <- dashboardBody(
   tabItems(
+    tabItem(tabName="dashboard",
+            includeMarkdown("./assets/dashboard.md"),
+            selectInput('switchtab', "Metric Selector", c("Home" = "dashboard", "Edits" = "wikidata_edits", "Pages" = "wikidata_pages", "Active Editors" = "wikidata_community_health"))),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")
@@ -116,16 +121,20 @@ body <- dashboardBody(
     tabItem(tabName = "wikidata_content_refstmts",
             dygraphOutput("wikidata_content_refstmts_plot"),
             htmlOutput("legend_refstmts"),
+            tags$hr(),
             dygraphOutput("wikidata_content_refstmts_wikipedia_plot"),
             htmlOutput("legend_refstmts_wikipedia"),
+            tags$hr(),
             dygraphOutput("wikidata_content_refstmts_other_plot"),
             htmlOutput("legend_refstmts_other")),
     tabItem(tabName = "wikidata_content_references",
             dygraphOutput("wikidata_content_references_plot"),
-            htmlOutput("legend_references")),
+            htmlOutput("legend_references"),
+            checkboxInput("checkbox_ref_itemlink", label = "Show itemlink", value = TRUE)),
     tabItem(tabName = "wikidata_content_statement_ranks",
             dygraphOutput("wikidata_content_statement_ranks_plot"),
-            htmlOutput("legend_statement_ranks")),
+            htmlOutput("legend_statement_ranks"),
+            checkboxInput("checkbox_normal_rank", label = "Show normal", value = FALSE)),
     tabItem(tabName = "wikidata_content_statement_item",
             dygraphOutput("wikidata_content_statement_item_plot"),
             htmlOutput("legend_statement_item")),
@@ -145,17 +154,10 @@ body <- dashboardBody(
             dygraphOutput("wikidata_kpi_active_editors_plot"),
             tags$br(),
             fluidRow(
-              uiOutput("metric_meta_community_health")
+              uiOutput("metric_meta_community_health"),
+              uiOutput("metric_meta_community_health_seeAlso")
             )),
     tabItem(tabName = "wikidata_quality",
-            fluidRow(
-              uiOutput("metric_meta_quality_objects1")
-            ),
-            tags$br(),
-            fluidRow(
-              uiOutput("metric_meta_quality1")
-            ),
-            tags$br(),
             fluidRow(
               uiOutput("metric_meta_quality_objects2")
             ),
@@ -165,7 +167,16 @@ body <- dashboardBody(
             ),
             tags$br(),
             fluidRow(
-              uiOutput("metric_meta_quality2")
+              uiOutput("metric_meta_quality2"),
+              uiOutput("metric_meta_quality2_seeAlso")
+            ),
+            tags$hr(),
+            fluidRow(
+              uiOutput("metric_meta_quality_objects1")
+            ),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_quality1")
             )),
     tabItem(tabName = "wikidata_partnerships",
             fluidRow(

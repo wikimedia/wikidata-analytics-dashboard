@@ -35,4 +35,3 @@ get_rdf_objects <- function(){
   internal_use_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Internal_Use>")
   return(invisible())
 }
-

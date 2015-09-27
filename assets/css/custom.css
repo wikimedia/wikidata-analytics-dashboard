@@ -13,3 +13,9 @@
     color: #fff;
     border-bottom: 0 solid transparent;
 }
+
+hr {
+height: 3px;
+background-color:#000033;
+}
+

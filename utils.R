@@ -219,3 +219,21 @@ get_rdf_individuals <- function(obj) {
   individuals = sparql.rdf(metrics_model, paste("SELECT ?s WHERE { ?s ?p ",obj,"}"))
   return(individuals)
 }
+
+dyVisibility <- function (dygraph, visibility = TRUE){
+  dygraph$x$attrs$visibility <- visibility
+  dygraph
+}
+
+standard_comment_box <- function(value) {
+  return(box(title = "comment", width = 6, status = "info", value))
+}
+
+standard_individual_box <- function(value) {
+  return(box(title = "Individual", width = 12, status = "primary", tags$a(href = value, value)))
+}
+
+standard_seeAlso_box <- function(value) {
+  return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href = value, value, target="_blank")))
+}
+

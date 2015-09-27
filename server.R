@@ -5,7 +5,7 @@ source("utils.R")
 
 existing_date <- (Sys.Date()-1)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
     if(Sys.Date() != existing_date){
       get_datasets()
@@ -14,6 +14,9 @@ shinyServer(function(input, output) {
       existing_date <<- Sys.Date()
     }
 
+observeEvent(input$switchtab, {
+    updateTabItems(session, "tabs", input$switchtab)
+})
     # http://wikiba.se/metrics#Edits
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
@@ -235,7 +238,8 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = custom_css))
+               dyCSS(css = custom_css) %>%
+               dyVisibility(visibility=c(TRUE, TRUE, TRUE, TRUE, input$checkbox_ref_itemlink)))
     })
     # http://wikiba.se/metrics#Statement_Ranks
     output$wikidata_content_statement_ranks_plot <- renderDygraph({
@@ -248,7 +252,8 @@ shinyServer(function(input, output) {
                          labelsKMB = TRUE,
                          stackedGraph = TRUE,
                          plotter = barChartPlotter) %>%
-               dyCSS(css = custom_css))
+               dyCSS(css = custom_css)  %>%
+              dyVisibility(visibility=c(TRUE, input$checkbox_normal_rank, TRUE)))
     })
     # http://wikiba.se/metrics#Statements_per_Item
     output$wikidata_content_statement_item_plot <- renderDygraph({
@@ -304,7 +309,7 @@ shinyServer(function(input, output) {
     })
     # http://wikiba.se/metrics#Community_Health
     output$metric_meta_community_health_objects <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = community_health_obj[1], community_health_obj[1]))
+      standard_individual_box(community_health_obj[1])
     })
     output$wikidata_kpi_active_editors_plot <- renderDygraph({
       wikidata_kpi_active_editors<- xts(wikidata_kpi_active_editors[, -1], wikidata_kpi_active_editors[, 1])
@@ -321,18 +326,22 @@ shinyServer(function(input, output) {
     })
     output$metric_meta_community_health <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",community_health_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
+    })
+    output$metric_meta_community_health_seeAlso <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",community_health_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
+      standard_seeAlso_box(metric_desc[1])
     })
     # http://wikiba.se/metrics#Quality
     output$metric_meta_quality_objects1 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = quality_obj[1], quality_obj[1]))
+      standard_individual_box(quality_obj[1])
     })
     output$metric_meta_quality1 <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",quality_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
     output$metric_meta_quality_objects2 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = quality_obj[2], quality_obj[2]))
+      standard_individual_box(quality_obj[2])
     })
     output$wikipedia_references_info <- renderUI({
       data_period <- tail(wikidata_references_overview[,1], 2)
@@ -361,40 +370,44 @@ shinyServer(function(input, output) {
         )
       }
     })
+    output$metric_meta_quality2_seeAlso <- renderUI({
+      metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
+      standard_seeAlso_box(metric_desc[1])
+    })
     output$metric_meta_quality2 <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment",width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
     # http://wikiba.se/metrics#Partnerships
     output$metric_meta_partnerships_objects <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = partnerships_obj[1], partnerships_obj[1]))
+      standard_individual_box(partnerships_obj[1])
     })
     output$metric_meta_partnerships <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",partnerships_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
     # http://wikiba.se/metrics#External_Use
     output$metric_meta_external_use_objects <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = external_use_obj[1], external_use_obj[1]))
+      standard_individual_box(external_use_obj[1])
     })
     output$metric_meta_external_use <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",external_use_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
 
     # http://wikiba.se/metrics#Internal_Use
     output$metric_meta_internal_use_objects1 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_obj[1], internal_use_obj[1]))
+      standard_individual_box(internal_use_obj[1])
     })
     output$metric_meta_internal_use1 <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",internal_use_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment", width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
     output$metric_meta_internal_use_objects2 <- renderUI({
-      box(title = "Individual", width = 12, status = "primary", tags$a(href = internal_use_obj[2], internal_use_obj[2]))
+      standard_individual_box(internal_use_obj[2])
     })
     output$metric_meta_internal_use2 <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",internal_use_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
-      box(title = "Comment",width = 6, status = "info", metric_desc[1])
+      standard_comment_box(metric_desc[1])
     })
 })
