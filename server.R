@@ -78,9 +78,20 @@ shinyServer(function(input, output) {
     output$wikidata_mailing_lists_plot <- renderDygraph({
       wikidata_mailing_lists <- xts(wikidata_mailing_lists[, -1], wikidata_mailing_lists[, 1])
       return(dygraph(wikidata_mailing_lists,
-                     main = "Wikidata Mailing Lists",
-                     ylab = "Lists") %>%
+                     main = "Wikidata Mailing Lists Subscribers",
+                     ylab = "Subscribers") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_lists", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css))
+    })
+    output$wikidata_mailing_lists_messages_plot <- renderDygraph({
+      wikidata_mailing_lists_messages <- xts(wikidata_mailing_lists_messages[, -1], wikidata_mailing_lists_messages[, 1])
+      return(dygraph(wikidata_mailing_lists_messages,
+                     main = "Wikidata Mailing Lists Messages",
+                     ylab = "Messages") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_lists_messages", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
@@ -295,6 +306,19 @@ shinyServer(function(input, output) {
     output$metric_meta_community_health_objects <- renderUI({
       box(title = "Individual", width = 12, status = "primary", tags$a(href = community_health_obj[1], community_health_obj[1]))
     })
+    output$wikidata_kpi_active_editors_plot <- renderDygraph({
+      wikidata_kpi_active_editors<- xts(wikidata_kpi_active_editors[, -1], wikidata_kpi_active_editors[, 1])
+      return(dygraph(wikidata_kpi_active_editors,
+                     main = "Wikidata Active Editors",
+                     ylab = "Active Editors") %>%
+               dyLegend(width = 400, show = "always") %>%
+               dySeries("V1", label = "Active Editors") %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 3,
+                         colors = brewer.pal(max(3, ncol(data)), "Set1")) %>%
+               dyCSS(css = custom_css))
+    })
     output$metric_meta_community_health <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",community_health_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
       box(title = "Comment", width = 6, status = "info", metric_desc[1])
@@ -309,6 +333,33 @@ shinyServer(function(input, output) {
     })
     output$metric_meta_quality_objects2 <- renderUI({
       box(title = "Individual", width = 12, status = "primary", tags$a(href = quality_obj[2], quality_obj[2]))
+    })
+    output$wikipedia_references_info <- renderUI({
+      data_period <- tail(wikidata_references_overview[,1], 2)
+      period_previous <- format(data_period[1])
+      period_current <- format(data_period[2])
+      total_statements <- tail(wikidata_references_overview[,3], 2)
+      referenced_statements_other <-tail(wikidata_references_overview[,6], 2)
+      metric_value_previous_raw <- referenced_statements_other[1]/total_statements[1]
+      metric_value_previous <- percent(metric_value_previous_raw)
+      metric_value_latest_raw <- referenced_statements_other[2]/total_statements[2]
+      metric_value_latest <- percent(metric_value_latest_raw)
+      referenced_statements_latest <- prettyNum(referenced_statements_other[2], big.mark=",")
+      referenced_statements_previous <- prettyNum(referenced_statements_other[1], big.mark=",")
+      box_title <- paste0("Metric Value")
+      box_value <- paste0(period_current, " : ", metric_value_latest, " - ", referenced_statements_latest)
+      box_value2 <- paste0(period_previous, " : ", metric_value_previous, " - ", referenced_statements_previous)
+      references_info <<- c(metric_value_previous_raw,metric_value_latest_raw)
+      references_delta_score <<- diff(references_info)
+      box(title = box_title, status = "warning", box_value, tags$br(), box_value2, tags$br())
+    })
+    output$wikipedia_references_info_scorebox <- renderInfoBox({
+      box_title <- paste0("Delta Score")
+      if(diff(references_info) > 0) {
+        infoBox(box_title, percent(references_delta_score), icon = icon("arrow-up"),
+                color = "green"
+        )
+      }
     })
     output$metric_meta_quality2 <- renderUI({
       metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")

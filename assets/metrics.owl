@@ -133,6 +133,12 @@
 
 
 
+    <!-- http://wikiba.se/metrics#dataSource -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#dataSource"/>
+
+
+
     <!--
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -374,7 +380,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
-        <rdfs:comment>Total number is reported every two weeks in https://tools.wmflabs.org/wikidata-todo/stats.php (&quot;Statements referenced to Wikipedia&quot;)</rdfs:comment>
+        <rdfs:seeAlso rdf:datatype="&xsd;anyURI">https://tools.wmflabs.org/wikidata-todo/stats.php</rdfs:seeAlso>
+        <rdfs:comment>Total number is reported every two weeks in https://tools.wmflabs.org/wikidata-todo/stats.php (&quot;Statements referenced to other sources&quot;)</rdfs:comment>
     </owl:NamedIndividual>
 
 

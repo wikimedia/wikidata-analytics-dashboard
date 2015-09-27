@@ -16,3 +16,4 @@ data_uri <- "http://localhost/data/"
 source_data_uri <- "http://wdm-data.wmflabs.org/"
 custom_css <- "./assets/css/custom.css"
 metrics_rdf = "/srv/dashboards/shiny-server/wdm/assets/metrics.owl"
+

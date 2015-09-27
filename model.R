@@ -3,6 +3,7 @@ get_datasets <- function(){
   wikidata_active_users <<- download_set("wikidata_eng_active_users.tsv")
   wikidata_social_media <<- download_set("wikidata_eng_social_media.tsv")
   wikidata_mailing_lists <<-download_set("wikidata_eng_mailing_lists.tsv")
+  wikidata_mailing_lists_messages <<-download_set("wikidata_eng_mailing_lists_messages.tsv")
   wikidata_references_overview <<- download_set("wikidata_content_references_overview.tsv")
   wikidata_pages <<- download_set("wikidata_content_pages.tsv")
   wikidata_content_items <<- download_set("wikidata_content_items.tsv")
@@ -16,6 +17,7 @@ get_datasets <- function(){
   wikidata_content_labels_item <<- download_set("wikidata_content_labels_item.tsv")
   wikidata_content_descriptions_item <<- download_set("wikidata_content_descriptions_item.tsv")
   wikidata_content_wikilinks_item <<- download_set("wikidata_content_wikimedia_links_item.tsv")
+  wikidata_kpi_active_editors <<- download_set("wikidata_kpi_active_editors.tsv")
   return(invisible())
 }
 
@@ -33,3 +35,4 @@ get_rdf_objects <- function(){
   internal_use_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Internal_Use>")
   return(invisible())
 }
+

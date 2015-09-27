@@ -219,4 +219,3 @@ get_rdf_individuals <- function(obj) {
   individuals = sparql.rdf(metrics_model, paste("SELECT ?s WHERE { ?s ?p ",obj,"}"))
   return(individuals)
 }
-
