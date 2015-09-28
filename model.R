@@ -18,6 +18,9 @@ get_datasets <- function(){
   wikidata_content_descriptions_item <<- download_set("wikidata_content_descriptions_item.tsv")
   wikidata_content_wikilinks_item <<- download_set("wikidata_content_wikimedia_links_item.tsv")
   wikidata_kpi_active_editors <<- download_set("wikidata_kpi_active_editors.tsv")
+  wikidata_daily_social <<- download_set("social.tsv", agg_data_uri)
+  wikidata_daily_site <<- download_set("site_stats.tsv", agg_data_uri)
+  wikidata_daily_getclaims_property_use <<- download_set("getclaims_property_use.tsv", agg_data_uri)
   return(invisible())
 }
 

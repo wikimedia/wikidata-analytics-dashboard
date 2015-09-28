@@ -15,6 +15,11 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = "tabs",
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem(text = "Recent Stats", icon = icon("signal"),
+             menuSubItem(text = "Edits/Day", tabName = "wikidata_daily_edits_delta"),
+             menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
+             menuSubItem(text = "New Users/Day", tabName = "wikidata_daily_users_delta"),
+             menuSubItem(text = "Social", tabName = "wikidata_daily_social")),
     menuItem(text = "Engagement", icon = icon("eye"),
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
              menuSubItem(text = "Active Users", tabName = "wikidata_active_users"),
@@ -37,8 +42,9 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Quality", tabName = "wikidata_quality"),
              menuSubItem(text = "Partnerships", tabName = "wikidata_partnerships"),
              menuSubItem(text = "External Use", tabName = "wikidata_external_use"),
-             menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use"))
-
+             menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use")),
+    menuItem(text = "Developer", icon = icon("gears"),
+             menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use"))
   )
 )
 
@@ -48,6 +54,30 @@ body <- dashboardBody(
     tabItem(tabName="dashboard",
             includeMarkdown("./assets/dashboard.md"),
             selectInput('switchtab', "Metric Selector", c("Home" = "dashboard", "Edits" = "wikidata_edits", "Pages" = "wikidata_pages", "Active Editors" = "wikidata_community_health"))),
+    tabItem(tabName = "wikidata_daily_edits_delta",
+            dygraphOutput("wikidata_daily_edits_delta_plot"),
+            tags$br(),
+            htmlOutput("legend_daily_site"),
+            checkboxInput("checkbox_total_edits", label = "Show total Edits", value = FALSE)),
+    tabItem(tabName = "wikidata_daily_pages_delta",
+            dygraphOutput("wikidata_daily_pages_delta_plot"),
+            tags$br(),
+            htmlOutput("legend_daily_pages"),
+            checkboxInput("checkbox_total_pages", label = "Show total Pages", value = FALSE)),
+    tabItem(tabName = "wikidata_daily_users_delta",
+            dygraphOutput("wikidata_daily_users_delta_plot"),
+            tags$br(),
+            htmlOutput("legend_daily_users"),
+            checkboxInput("checkbox_total_users", label = "Show total Users", value = FALSE)),
+    tabItem(tabName = "wikidata_daily_social",
+            dygraphOutput("wikidata_daily_social_plot"),
+            tags$br(),
+            htmlOutput("legend_daily_social")),
+    tabItem(tabName = "wikidata_daily_getclaims_property_use",
+            fluidRow(
+              uiOutput("metric_meta_getclaims_title")
+            ),
+            dataTableOutput("wikidata_daily_getclaims_property_use_plot")),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")

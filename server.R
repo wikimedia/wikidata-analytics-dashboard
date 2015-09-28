@@ -17,6 +17,71 @@ shinyServer(function(input, output, session) {
 observeEvent(input$switchtab, {
     updateTabItems(session, "tabs", input$switchtab)
 })
+    #Daily Site
+    wikidata_recent_site <- wikidata_daily_site[which(wikidata_daily_site$date > existing_date - 5),]
+    df <- wikidata_recent_site[order(wikidata_recent_site$date, decreasing =TRUE),]
+    dt <- data.table(df)
+    # http://wikiba.se/metrics#RecentEdits
+    output$wikidata_daily_edits_delta_plot <- renderDygraph({
+      wikidata_daily_edits_delta <- dt[, list(date, total_edits, diff_total_edits=diff(total_edits)*-1)]
+      return(dygraph(wikidata_daily_edits_delta,
+                     main = "Wikidata Edits/Day Last 5 Days",
+                     ylab = "") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_site", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css) %>%
+               dyVisibility(visibility=c(input$checkbox_total_edits, TRUE)))
+    })
+    # http://wikiba.se/metrics#RecentPages
+    output$wikidata_daily_pages_delta_plot <- renderDygraph({
+      wikidata_daily_pages_delta <- dt[, list(date, total_pages, diff_total_pages=diff(total_pages)*-1)]
+      return(dygraph(wikidata_daily_pages_delta,
+                     main = "Wikidata New Pages/Day Last 5 Days",
+                     ylab = "") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_pages", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css) %>%
+               dyVisibility(visibility=c(input$checkbox_total_pages, TRUE)))
+    })
+    # http://wikiba.se/metrics#RecentUsers
+    output$wikidata_daily_users_delta_plot <- renderDygraph({
+      wikidata_daily_users_delta <- dt[, list(date, users, diff_total_users=diff(users)*-1)]
+      return(dygraph(wikidata_daily_users_delta,
+                     main = "Wikidata New Users/Day Last 5 Days",
+                     ylab = "") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_users", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css) %>%
+               dyVisibility(visibility=c(input$checkbox_total_users, TRUE)))
+    })
+    # http://wikiba.se/metrics#Social
+    output$wikidata_daily_social_plot <- renderDygraph({
+      wikidata_recent_social <- wikidata_daily_social[which(wikidata_daily_social$date > existing_date - 30),]
+      wikidata_recent_social <- xts(wikidata_recent_social[, -1], wikidata_recent_social[, 1])
+      return(dygraph(wikidata_recent_social,
+                     main = "Wikidata Social Media Last 30 Days",
+                     ylab = "Users") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_social", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css))
+    })
+    # http://wikiba.se/metrics#GetClaimsPropertyUse
+    output$metric_meta_getclaims_title <- renderUI({
+      first_sample <- head(wikidata_daily_getclaims_property_use$date, 1)
+      metric_desc <- paste0("Aggregate getClaim Property Use count Since ", first_sample)
+      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+    })
+    aggr_props <- aggregate(wikidata_daily_getclaims_property_use$count, by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
+    aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
+    output$wikidata_daily_getclaims_property_use_plot <-renderDataTable(aggr_props_ordered, options = list(pageLength = 50))
     # http://wikiba.se/metrics#Edits
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
