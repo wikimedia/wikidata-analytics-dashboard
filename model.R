@@ -1,11 +1,8 @@
-get_datasets <- function(){
-  wikidata_edits <<- download_set("wikidata_eng_edits.tsv")
-  wikidata_active_users <<- download_set("wikidata_eng_active_users.tsv")
+get_local_datasets <- function(){
   wikidata_social_media <<- download_set("wikidata_eng_social_media.tsv")
   wikidata_mailing_lists <<-download_set("wikidata_eng_mailing_lists.tsv")
   wikidata_mailing_lists_messages <<-download_set("wikidata_eng_mailing_lists_messages.tsv")
   wikidata_references_overview <<- download_set("wikidata_content_references_overview.tsv")
-  wikidata_pages <<- download_set("wikidata_content_pages.tsv")
   wikidata_content_items <<- download_set("wikidata_content_items.tsv")
   wikidata_properties <<- download_set("wikidata_content_properties.tsv")
   wikidata_content_refstmts <<-download_set("wikidata_content_refstmts.tsv")
@@ -18,10 +15,39 @@ get_datasets <- function(){
   wikidata_content_descriptions_item <<- download_set("wikidata_content_descriptions_item.tsv")
   wikidata_content_wikilinks_item <<- download_set("wikidata_content_wikimedia_links_item.tsv")
   wikidata_kpi_active_editors <<- download_set("wikidata_kpi_active_editors.tsv")
-  wikidata_daily_social <<- download_set("social.tsv", agg_data_uri)
-  wikidata_daily_site <<- download_set("site_stats.tsv", agg_data_uri)
-  wikidata_daily_getclaims_property_use <<- download_set("getclaims_property_use.tsv", agg_data_uri)
   return(invisible())
+}
+
+get_remote_datasets <- function(){
+  out <- tryCatch({
+    con <- curl(agg_data_uri)
+    readLines(con)
+  },
+  warning = function(cond){
+    message(paste("URL caused a warning:", uri))
+    message("Warning message:")
+    message(cond)
+    return(NULL)
+  },
+  error = function(cond){
+    message(paste("URL does not exist:", uri))
+    message("Error message:")
+    message(cond)
+    return(NA)
+  },
+  finally = {
+  wikidata_edits <<- download_set("site_stats_total_edits.tsv", agg_data_uri)
+  wikidata_active_users <<- download_set("site_stats_active_users.tsv", agg_data_uri)
+  wikidata_pages <<- download_set("site_stats_total_pages.tsv", agg_data_uri)
+  wikidata_gooditems <<- download_set("site_stats_good_articles.tsv", agg_data_uri)
+  wikidata_daily_getclaims_property_use <<- download_set("getclaims_property_use.tsv", agg_data_uri)
+  wikidata_facebook <<- download_set("social_facebook.tsv", agg_data_uri)
+  wikidata_googleplus <<- download_set("social_googleplus.tsv", agg_data_uri)
+  wikidata_twitter <<- download_set("social_twitter.tsv", agg_data_uri)
+  wikidata_identica <<- download_set("social_identica.tsv", agg_data_uri)
+  wikidata_irc <<- download_set("social_irc.tsv", agg_data_uri)
+  })
+  return(out)
 }
 
 load_rdf_model <-function(){

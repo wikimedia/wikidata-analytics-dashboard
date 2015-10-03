@@ -1,81 +1,12 @@
 download_set <- function(file, uri = data_uri){
-  out <- tryCatch(
-    {location <- paste0(uri, file,
-                       "?ts=", gsub(x = Sys.time(), pattern = "(-| )", replacement = ""))
-    con <- url(location);
-    readr::read_delim(con, delim = "\t")
-    },
-    warning = function(cond)
-    {message(paste("URL caused a warning:", location))
-      message("Warning message:")
-      message(cond)
-      return(NULL)
-    },
-    error = function(cond)
-    {message(paste("URL does not exist:", location))
-      message("Error message:")
-      message(cond)
-      return(NA)
-    },
-    finally = {}
-    )
-  return(out)
+      location <- paste0(uri, file,
+                         "?ts=", gsub(x = Sys.time(), pattern = "(-| )", replacement = ""))
+      con <- url(location);
+      set <- readr::read_delim(con, delim = "\t")
+      return(set)
 }
 
-# Takes an untidy (read: dygraph-appropriate) dataset and adds
-# columns for each variable consisting of the smoothed, averaged mean
-smoother <- function(dataset, smooth_level = "day", rename = TRUE) {
-
-  # Determine the names and levels of aggregation. By default
-  # a smoothing level of "day" is assumed, which is no smoothing
-  # whatsoever, and so the original dataset is returned.
-  switch(smooth_level,
-         moving_avg = {
-           df <- apply(dataset[, -1, drop = FALSE], 2, function(x) {
-             y <- xts(x, dataset[, 1])
-             return(as.numeric(zoo::rollmean(x, k = 17, fill = NA)))
-           }) %>% as.data.frame %>% cbind(timestamp = dataset[, 1], .)
-           names(df) <- names(dataset)
-           if (rename) names(df)[-1] <- paste(names(df)[-1], " (Moving average)")
-           return(df)
-         },
-         week = {
-           dataset$filter_1 <- lubridate::week(dataset[, 1])
-           dataset$filter_2 <- lubridate::year(dataset[, 1])
-           name_append <- ifelse(rename, " (Weekly average)", "")
-         },
-         month = {
-           dataset$filter_1 <- lubridate::month(dataset[, 1])
-           dataset$filter_2 <- lubridate::year(dataset[, 1])
-           name_append <- ifelse(rename, " (Monthly average)", "")
-         },
-         {
-           return(dataset)
-         }
-  )
-
-  # If we're still here it was weekly or monthly. Calculate
-  # the average for each unique permutation of filters
-
-  result <- ddply(.data = dataset,
-                  .variables = c("filter_1", "filter_2"),
-                  .fun = function(df, name_append){
-
-                    # Construct output names for the averages, compute those averages, and
-                    # apply said names.
-                    output_names <- paste0(names(df)[2:(ncol(df) - 2)], name_append)
-                    holding <- apply(df[, 2:(ncol(df) - 2), drop = FALSE], 2, FUN = median) %>%
-                      round %>% t %>% as.data.frame
-                    names(holding) <- output_names
-
-                    # Return the bound original values and averaged values
-                    return(cbind(df[, 1, drop = FALSE], holding))
-                  }, name_append = name_append)
-
-  return(result[, !(names(result) %in% c("filter_1","filter_2"))])
-}
-
-#Create a dygraph using our standard format.
+#Create a dygraph using standard format.
 make_dygraph <- function(data, x, y, title, is_single = FALSE, legend_name = NULL, use_si = TRUE, smoothing = "day") {
   data <- xts(data[, -1], order.by = data[, 1])
   return(dygraph(data, main = title, xlab = x, ylab = y) %>%
@@ -236,4 +167,3 @@ standard_individual_box <- function(value) {
 standard_seeAlso_box <- function(value) {
   return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href = value, value, target="_blank")))
 }
-

@@ -12,6 +12,7 @@ library(magrittr)
 library(curl)
 library(rrdf)
 library(data.table)
+library(DT)
 data_uri <- "http://localhost/data/"
 source_data_uri <- "http://wdm-data.wmflabs.org/data/"
 agg_data_uri <- "http://datasets.wikimedia.org/aggregate-datasets/wikidata/"

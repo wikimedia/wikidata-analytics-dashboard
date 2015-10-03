@@ -8,24 +8,32 @@ existing_date <- (Sys.Date()-1)
 shinyServer(function(input, output, session) {
 
     if(Sys.Date() != existing_date){
-      get_datasets()
+      get_local_datasets()
+      get_remote_datasets()
       load_rdf_model()
       get_rdf_objects()
       existing_date <<- Sys.Date()
     }
 
-observeEvent(input$switchtab, {
-    updateTabItems(session, "tabs", input$switchtab)
-})
-    #Daily Site
-    wikidata_recent_site <- wikidata_daily_site[which(wikidata_daily_site$date > existing_date - 5),]
-    df <- wikidata_recent_site[order(wikidata_recent_site$date, decreasing =TRUE),]
-    dt <- data.table(df)
+    observeEvent(input$switchtab, {
+        updateTabItems(session, "tabs", input$switchtab)
+    })
+    #Home
+    latest_frame <- data.frame(tail(wikidata_edits,1), tail(wikidata_active_users,1), tail(wikidata_pages,1),tail(wikidata_gooditems,1),tail(wikidata_facebook,1),tail(wikidata_googleplus,1),tail(wikidata_twitter,1),tail(wikidata_identica,1),tail(wikidata_irc,1))
+    dt_latest <- data.table(latest_frame)
+    dt_latest <- setnames(dt_latest, c("Date", "Edits", "date.1", "Active Users", "date.2", "Pages", "date.3", "Content Pages", "date.4", "Facebook Likes", "date.5", "Google+ Followers", "date.6","Twitter Followers", "date.7","Identica Followers", "date.8","IRC"))
+    dt_latest <- dt_latest[, list(Date, Edits, `Active Users`,Pages,`Content Pages`,`Facebook Likes`,`Google+ Followers`,`Twitter Followers`,`Identica Followers`,IRC)]
+    df_out <- t(dt_latest)
+    output$wikidata_daily_summary_table <- renderDataTable(
+      datatable(df_out, class = "display compact", colnames = c("Property", "Value"), caption = "Statistics Today"))
     # http://wikiba.se/metrics#RecentEdits
+    wikidata_recent_edits <- wikidata_edits[which(wikidata_edits$date > existing_date - 7),]
+    df_recent_edits <- wikidata_recent_edits[order(wikidata_recent_edits$date, decreasing =TRUE),]
+    dt_recent_edits <- data.table(df_recent_edits)
     output$wikidata_daily_edits_delta_plot <- renderDygraph({
-      wikidata_daily_edits_delta <- dt[, list(date, total_edits, diff_total_edits=diff(total_edits)*-1)]
+      wikidata_daily_edits_delta <- dt_recent_edits[, list(date, count, diff_count=diff(count)*-1)]
       return(dygraph(wikidata_daily_edits_delta,
-                     main = "Wikidata Edits/Day Last 5 Days",
+                     main = "Wikidata Edits/Day Last 7 Days",
                      ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_site", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
@@ -35,23 +43,34 @@ observeEvent(input$switchtab, {
                dyVisibility(visibility=c(input$checkbox_total_edits, TRUE)))
     })
     # http://wikiba.se/metrics#RecentPages
+    df_pages_ordered <- wikidata_pages[order(wikidata_pages$date, decreasing =TRUE),]
+    df_recent_pages <- df_pages_ordered[1:11,]
+    df_gooditems_ordered <- wikidata_gooditems[order(wikidata_gooditems$date, decreasing =TRUE),]
+    df_recent_gooditems <- df_gooditems_ordered[1:11,]
+    df_recent_content <- data.frame(df_recent_pages, df_recent_gooditems)
+    dt_recent_content <- data.table(df_recent_content)
+    dt_recent_content <- dt_recent_content[, list(date, count, count.1)]
     output$wikidata_daily_pages_delta_plot <- renderDygraph({
-      wikidata_daily_pages_delta <- dt[, list(date, total_pages, diff_total_pages=diff(total_pages)*-1)]
+      wikidata_daily_pages_delta <- dt_recent_content[, list(date, count, diff_pages=diff(count)*-1, count.1, diff_contentpages=diff(count.1)*-1)]
       return(dygraph(wikidata_daily_pages_delta,
-                     main = "Wikidata New Pages/Day Last 5 Days",
+                     main = "Wikidata New Pages/Day Last 7 Days",
                      ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_pages", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
+                         fillGraph = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
                dyCSS(css = custom_css) %>%
-               dyVisibility(visibility=c(input$checkbox_total_pages, TRUE)))
+               dyVisibility(visibility=c(input$checkbox_total_pages, TRUE, input$checkbox_total_gooditems, TRUE)))
     })
     # http://wikiba.se/metrics#RecentUsers
+    wikidata_recent_users <- wikidata_active_users[which(wikidata_active_users$date > existing_date - 7),]
+    df_recent_users <- wikidata_recent_users[order(wikidata_recent_users$date, decreasing =TRUE),]
+    dt_recent_users <- data.table(df_recent_users)
     output$wikidata_daily_users_delta_plot <- renderDygraph({
-      wikidata_daily_users_delta <- dt[, list(date, users, diff_total_users=diff(users)*-1)]
+      wikidata_daily_users_delta <- dt_recent_users[, list(date, count, diff_count=diff(count)*-1)]
       return(dygraph(wikidata_daily_users_delta,
-                     main = "Wikidata New Users/Day Last 5 Days",
+                     main = "Wikidata New Users/Day Last 7 Days",
                      ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_users", labelsSeparateLines = TRUE) %>%
                dyOptions(useDataTimezone = TRUE,
@@ -61,13 +80,20 @@ observeEvent(input$switchtab, {
                dyVisibility(visibility=c(input$checkbox_total_users, TRUE)))
     })
     # http://wikiba.se/metrics#Social
+    wikidata_recent_social <- data.frame(wikidata_facebook, wikidata_googleplus, wikidata_twitter, wikidata_identica, wikidata_irc)
+    wikidata_recent_social <- wikidata_recent_social[which(wikidata_recent_social$date > existing_date - 360),]
+    dt_recent_social <- data.table(wikidata_recent_social)
+    dt_recent_social <- dt_recent_social[, list(date, likes, followers, followers.1, followers.2, members)]
     output$wikidata_daily_social_plot <- renderDygraph({
-      wikidata_recent_social <- wikidata_daily_social[which(wikidata_daily_social$date > existing_date - 30),]
-      wikidata_recent_social <- xts(wikidata_recent_social[, -1], wikidata_recent_social[, 1])
-      return(dygraph(wikidata_recent_social,
-                     main = "Wikidata Social Media Last 30 Days",
-                     ylab = "Users") %>%
+     return(dygraph(dt_recent_social,
+                     main = "Wikidata Social Media",
+                     ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_social", labelsSeparateLines = TRUE) %>%
+               dySeries("likes", label = "Facebook") %>%
+               dySeries("followers", label = "Google+") %>%
+               dySeries("followers.1", label = "Twitter") %>%
+               dySeries("followers.2", label = "Identica") %>%
+               dySeries("members", label = "IRC") %>%
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
@@ -76,29 +102,32 @@ observeEvent(input$switchtab, {
     # http://wikiba.se/metrics#GetClaimsPropertyUse
     output$metric_meta_getclaims_title <- renderUI({
       first_sample <- head(wikidata_daily_getclaims_property_use$date, 1)
-      metric_desc <- paste0("Aggregate getClaim Property Use count Since ", first_sample)
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      last_sample <- tail(wikidata_daily_getclaims_property_use$date, 1)
+      metric_desc <- "Aggregate getClaim Property Use count"
+      metric_range <- paste0("From ", first_sample, " To ", last_sample)
+      box(title = "Definition", width = 6, status = "info", metric_desc, HTML("<br/>"), metric_range)
     })
     aggr_props <- aggregate(wikidata_daily_getclaims_property_use$count, by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
     aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
-    output$wikidata_daily_getclaims_property_use_plot <-renderDataTable(aggr_props_ordered, options = list(pageLength = 50))
+    output$wikidata_daily_getclaims_property_use_table <-renderDataTable(aggr_props_ordered, options = list(pageLength = 50))
     # http://wikiba.se/metrics#Edits
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
                    "", "Edits", "Wikidata Edits")
     })
     output$editdelta <- renderInfoBox({
-      edits_period <- tail(wikidata_edits$date, 2)
-      period_last <- format(edits_period[2])
-      period_current <- format(edits_period[1])
-      edits_latest <- cbind("Edits" = tail(wikidata_edits$edits, 2))
-      edits_delta <- diff(edits_latest)
-      edits_last_total <- edits_latest[1]
+      wikidata_edits_30day <- wikidata_edits[which(wikidata_edits$date > existing_date - 30),]
+      edits_first <- tail(wikidata_edits_30day[order(wikidata_edits_30day$date, decreasing =TRUE),],1)
+      edits_current <- head(wikidata_edits_30day[order(wikidata_edits_30day$date, decreasing =TRUE),],1)
+      period_last <- format(edits_first[1])
+      period_current <- format(edits_current[1])
+      edits_delta <- edits_current$count - edits_first$count
+      edits_last_total <- edits_current$count
       edits_delta_percentage <- percent(edits_delta/edits_last_total)
       form_edits <- prettyNum(edits_delta, big.mark=",")
-      box_title <- paste0("Edit Delta")
+      box_title <- paste0("Edit 30 Day Delta")
       box_subtitle <- paste0(period_current, " to ", period_last)
-      box_value <- paste0(form_edits, " - ", edits_delta_percentage)
+      box_value <- paste0(form_edits, " | ", edits_delta_percentage)
       infoBox(box_title, box_value, box_subtitle, icon = icon("arrow-up"),
         color = "green"
       )

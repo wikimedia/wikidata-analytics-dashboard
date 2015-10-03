@@ -15,11 +15,16 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = "tabs",
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem(text = "Recent Stats", icon = icon("signal"),
+    menuItem(text = "", badgeLabel = "Recent", badgeColor = "green"),
+    menuItem(text = "Site", icon = icon("signal"),
              menuSubItem(text = "Edits/Day", tabName = "wikidata_daily_edits_delta"),
              menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
-             menuSubItem(text = "New Users/Day", tabName = "wikidata_daily_users_delta"),
-             menuSubItem(text = "Social", tabName = "wikidata_daily_social")),
+             menuSubItem(text = "New Users/Day", tabName = "wikidata_daily_users_delta")),
+    menuItem(text = "Developer", icon = icon("gears"),
+             menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
+    menuItem(text = "Social Stats", icon = icon("heart"),
+             menuSubItem(text = "Networks", tabName = "wikidata_daily_social")),
+    menuItem(text = "", badgeLabel = "Monthly", badgeColor = "purple"),
     menuItem(text = "Engagement", icon = icon("eye"),
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
              menuSubItem(text = "Active Users", tabName = "wikidata_active_users"),
@@ -37,14 +42,13 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Labels per item", tabName = "wikidata_content_labels_item"),
              menuSubItem(text = "Descriptions per item", tabName = "wikidata_content_descriptions_item"),
              menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item")),
-    menuItem(text = "KPI", icon = icon("trophy"),
+     menuItem(text = "", badgeLabel = "Performance", badgeColor = "aqua"),
+     menuItem(text = "KPI", icon = icon("trophy"),
              menuSubItem(text = "Community Health", tabName = "wikidata_community_health"),
              menuSubItem(text = "Quality", tabName = "wikidata_quality"),
              menuSubItem(text = "Partnerships", tabName = "wikidata_partnerships"),
              menuSubItem(text = "External Use", tabName = "wikidata_external_use"),
-             menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use")),
-    menuItem(text = "Developer", icon = icon("gears"),
-             menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use"))
+             menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use"))
   )
 )
 
@@ -53,7 +57,8 @@ body <- dashboardBody(
   tabItems(
     tabItem(tabName="dashboard",
             includeMarkdown("./assets/dashboard.md"),
-            selectInput('switchtab', "Metric Selector", c("Home" = "dashboard", "Edits" = "wikidata_edits", "Pages" = "wikidata_pages", "Active Editors" = "wikidata_community_health"))),
+            selectInput('switchtab', "Metric Selector", c("Home" = "dashboard", "Edits" = "wikidata_edits", "Pages" = "wikidata_pages", "Active Editors" = "wikidata_community_health")),
+            dataTableOutput("wikidata_daily_summary_table")),
     tabItem(tabName = "wikidata_daily_edits_delta",
             dygraphOutput("wikidata_daily_edits_delta_plot"),
             tags$br(),
@@ -63,7 +68,8 @@ body <- dashboardBody(
             dygraphOutput("wikidata_daily_pages_delta_plot"),
             tags$br(),
             htmlOutput("legend_daily_pages"),
-            checkboxInput("checkbox_total_pages", label = "Show total Pages", value = FALSE)),
+            checkboxInput("checkbox_total_pages", label = "Show total Pages", value = FALSE),
+            checkboxInput("checkbox_total_gooditems", label = "Show total Content Pages", value = FALSE)),
     tabItem(tabName = "wikidata_daily_users_delta",
             dygraphOutput("wikidata_daily_users_delta_plot"),
             tags$br(),
@@ -77,7 +83,7 @@ body <- dashboardBody(
             fluidRow(
               uiOutput("metric_meta_getclaims_title")
             ),
-            dataTableOutput("wikidata_daily_getclaims_property_use_plot")),
+            dataTableOutput("wikidata_daily_getclaims_property_use_table")),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")
