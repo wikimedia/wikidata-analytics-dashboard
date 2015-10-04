@@ -58,7 +58,7 @@ body <- dashboardBody(
     tabItem(tabName="dashboard",
             includeMarkdown("./assets/dashboard.md"),
             selectInput('switchtab', "Metric Selector", c("Home" = "dashboard", "Edits" = "wikidata_edits", "Pages" = "wikidata_pages", "Active Editors" = "wikidata_community_health")),
-            dataTableOutput("wikidata_daily_summary_table")),
+            DT::dataTableOutput("wikidata_daily_summary_table")),
     tabItem(tabName = "wikidata_daily_edits_delta",
             dygraphOutput("wikidata_daily_edits_delta_plot"),
             tags$br(),
@@ -83,7 +83,7 @@ body <- dashboardBody(
             fluidRow(
               uiOutput("metric_meta_getclaims_title")
             ),
-            dataTableOutput("wikidata_daily_getclaims_property_use_table")),
+            DT::dataTableOutput("wikidata_daily_getclaims_property_use_table")),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")

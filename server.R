@@ -19,13 +19,13 @@ shinyServer(function(input, output, session) {
         updateTabItems(session, "tabs", input$switchtab)
     })
     #Home
-    latest_frame <- data.frame(tail(wikidata_edits,1), tail(wikidata_active_users,1), tail(wikidata_pages,1),tail(wikidata_gooditems,1),tail(wikidata_facebook,1),tail(wikidata_googleplus,1),tail(wikidata_twitter,1),tail(wikidata_identica,1),tail(wikidata_irc,1))
+   latest_frame <- data.frame(tail(wikidata_edits,1), tail(wikidata_active_users,1), tail(wikidata_pages,1),tail(wikidata_gooditems,1),tail(wikidata_facebook,1),tail(wikidata_googleplus,1),tail(wikidata_twitter,1),tail(wikidata_identica,1),tail(wikidata_irc,1))
     dt_latest <- data.table(latest_frame)
     dt_latest <- setnames(dt_latest, c("Date", "Edits", "date.1", "Active Users", "date.2", "Pages", "date.3", "Content Pages", "date.4", "Facebook Likes", "date.5", "Google+ Followers", "date.6","Twitter Followers", "date.7","Identica Followers", "date.8","IRC"))
     dt_latest <- dt_latest[, list(Date, Edits, `Active Users`,Pages,`Content Pages`,`Facebook Likes`,`Google+ Followers`,`Twitter Followers`,`Identica Followers`,IRC)]
     df_out <- t(dt_latest)
-    output$wikidata_daily_summary_table <- renderDataTable(
-      datatable(df_out, class = "display compact", colnames = c("Property", "Value"), caption = "Statistics Today"))
+    output$wikidata_daily_summary_table <- DT::renderDataTable(
+     datatable(df_out, class = "display compact", colnames = c("Property", "Value"), caption = "Statistics Today"))
     # http://wikiba.se/metrics#RecentEdits
     wikidata_recent_edits <- wikidata_edits[which(wikidata_edits$date > existing_date - 7),]
     df_recent_edits <- wikidata_recent_edits[order(wikidata_recent_edits$date, decreasing =TRUE),]
@@ -109,8 +109,7 @@ shinyServer(function(input, output, session) {
     })
     aggr_props <- aggregate(wikidata_daily_getclaims_property_use$count, by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
     aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
-    output$wikidata_daily_getclaims_property_use_table <-renderDataTable(aggr_props_ordered, options = list(pageLength = 50))
-    # http://wikiba.se/metrics#Edits
+    output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(datatable(aggr_props_ordered, class = "display compact", colnames = c("Property", "Value"), rownames = FALSE, options = list(pageLength = 50, autoWidth = TRUE, columnDefs = list(list(className = 'dt-left', targets = c(0,1))))))
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
                    "", "Edits", "Wikidata Edits")
