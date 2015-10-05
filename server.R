@@ -70,14 +70,18 @@ shinyServer(function(input, output, session) {
     output$wikidata_daily_users_delta_plot <- renderDygraph({
       wikidata_daily_users_delta <- dt_recent_users[, list(date, count, diff_count=diff(count)*-1)]
       return(dygraph(wikidata_daily_users_delta,
-                     main = "Wikidata New Users/Day Last 7 Days",
-                     ylab = "") %>%
+                     main = "Wikidata New Active Users/Day Last 7 Days") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_users", labelsSeparateLines = TRUE) %>%
+               dyAxis("y", label = "Active Users", valueRange = c(-200, 200)) %>%
+               dySeries("count", axis = 'y2') %>%
                dyOptions(useDataTimezone = TRUE,
                          labelsKMB = TRUE,
+                         fillGraph = TRUE,
+                         includeZero = TRUE,
+                         drawPoints = TRUE,
                          strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
                dyCSS(css = custom_css) %>%
-               dyVisibility(visibility=c(input$checkbox_total_users, TRUE)))
+               dyVisibility(visibility=c(TRUE, input$checkbox_total_users)))
     })
     # http://wikiba.se/metrics#Social
     wikidata_recent_social <- data.frame(wikidata_facebook, wikidata_googleplus, wikidata_twitter, wikidata_identica, wikidata_irc)
@@ -125,7 +129,7 @@ shinyServer(function(input, output, session) {
       edits_delta_percentage <- percent(edits_delta/edits_last_total)
       form_edits <- prettyNum(edits_delta, big.mark=",")
       box_title <- paste0("Edit 30 Day Delta")
-      box_subtitle <- paste0(period_current, " to ", period_last)
+      box_subtitle <- paste0(period_last, " to ", period_current)
       box_value <- paste0(form_edits, " | ", edits_delta_percentage)
       infoBox(box_title, box_value, box_subtitle, icon = icon("arrow-up"),
         color = "green"
@@ -135,12 +139,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = engagement_obj[1], engagement_obj[1]))
     })
     output$metric_meta_edits_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=metric_desc[1], metric_desc[1]))
     })
     output$metric_meta_edits_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#Active_Users
     output$wikidata_active_users_plot <- renderDygraph({
@@ -151,12 +155,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = engagement_obj[2], engagement_obj[2]))
     })
     output$metric_meta_active_users_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=metric_desc[1], metric_desc[1]))
     })
     output$metric_meta_active_users_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#Social_Media
     output$wikidata_social_media_plot <- renderDygraph({
@@ -202,12 +206,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[13], content_obj[13]))
     })
     output$metric_meta_pages_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=metric_desc[1], metric_desc[1]))
     })
     output$metric_meta_pages_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#Items
     output$wikidata_content_items_plot <- renderDygraph({
@@ -227,12 +231,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[5], content_obj[5]))
     })
     output$metric_meta_items_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
     })
     output$metric_meta_items_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[5],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#Properties
     output$wikidata_properties_plot <- renderDygraph({
@@ -253,12 +257,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[9], content_obj[9]))
     })
     output$metric_meta_properties_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
     })
     output$metric_meta_properties_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[9],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#References_Overview
     output$wikidata_references_overview_plot <- renderDygraph({
@@ -276,12 +280,12 @@ shinyServer(function(input, output, session) {
       box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[1], content_obj[1]))
     })
     output$metric_meta_references_overview_datasource <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://wikiba.se/metrics#dataSourceFile>")
-      box(title = "dataSourceFile", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://wikiba.se/metrics#dataSourceURI>")
+      box(title = "dataSourceURI", width = 6, status = "info", tags$a(href=paste0(source_data_uri, metric_desc[1]), metric_desc[1]))
     })
     output$metric_meta_references_overview_notes <- renderUI({
-      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>")
-      box(title = "Definition", width = 6, status = "info", metric_desc[1])
+      metric_desc <- get_rdf_metadata(paste0("<",content_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")
+      box(title = "Comment", width = 6, status = "info", metric_desc[1])
     })
     # http://wikiba.se/metrics#Referenced_Statements_by_Type
     output$wikidata_content_refstmts_plot <- renderDygraph({

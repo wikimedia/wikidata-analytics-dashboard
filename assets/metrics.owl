@@ -30,9 +30,9 @@
 
 
 
-    <!-- http://wikiba.se/metrics#dataSourceFile -->
+    <!-- http://wikiba.se/metrics#dataSourceURI -->
 
-    <owl:AnnotationProperty rdf:about="http://wikiba.se/metrics#dataSourceFile"/>
+    <owl:AnnotationProperty rdf:about="http://wikiba.se/metrics#dataSourceURI"/>
 
 
 
@@ -64,6 +64,12 @@
     <!-- http://wikiba.se/metrics#Content -->
 
     <owl:Class rdf:about="http://wikiba.se/metrics#Content"/>
+
+
+
+    <!-- http://wikiba.se/metrics#Daily -->
+
+    <owl:Class rdf:about="http://wikiba.se/metrics#Daily"/>
 
 
 
@@ -148,9 +154,9 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Active_Users">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
-        <updateFrequency>Monthly</updateFrequency>
-        <rdfs:isDefinedBy># of editors who did an edit in the last 30 days</rdfs:isDefinedBy>
-        <dataSourceFile>wikidata_eng_active_users.tsv</dataSourceFile>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_active_users.tsv</dataSourceURI>
+        <rdfs:comment>any account with an action recorded in the RC table during the last 30 days - see the source code of SpecialActiveusers.php for more details.</rdfs:comment>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -160,7 +166,6 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Descriptions_per_Item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
-        <dataSourceFile>wikidata_content_descriptions_item.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -169,27 +174,59 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Edits">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
-        <updateFrequency>Monthly</updateFrequency>
-        <rdfs:isDefinedBy># of Edits on wikidata</rdfs:isDefinedBy>
-        <dataSourceFile>wikidata_eng_edits.tsv</dataSourceFile>
+        <rdfs:comment>updates to countable pages (in #Content namespaces).  Also includes new page creation.</rdfs:comment>
+        <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_total_edits.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
 
-    <!-- http://wikiba.se/metrics#Facebook_Fans -->
+    <!-- http://wikiba.se/metrics#Edits_Day -->
 
-    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Facebook_Fans">
-        <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
-        <updateFrequency>Monthly</updateFrequency>
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Edits_Day">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Daily"/>
+        <rdfs:label>Edits per Day</rdfs:label>
+        <rdfs:seeAlso>http://wikiba.se/metrics#Edits</rdfs:seeAlso>
     </owl:NamedIndividual>
 
 
 
-    <!-- http://wikiba.se/metrics#GooglePlus_Fans -->
+    <!-- http://wikiba.se/metrics#Facebook -->
 
-    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#GooglePlus_Fans">
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Facebook">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
-        <updateFrequency>Monthly</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_facebook.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#GooglePlus -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#GooglePlus">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
+        <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_googleplus.tsv</dataSourceURI>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#IRC -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#IRC">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_irc.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#Identica -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Identica">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_identica.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -199,7 +236,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Items">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
-        <dataSourceFile>wikidata_content_items.tsv</dataSourceFile>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Item</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -213,13 +250,33 @@
 
 
 
+    <!-- http://wikiba.se/metrics#New_Pages_Day -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#New_Pages_Day">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Daily"/>
+        <rdfs:label>New Pages per Day</rdfs:label>
+        <rdfs:seeAlso>http://wikiba.se/metrics#Pages</rdfs:seeAlso>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#New_Users_Day -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#New_Users_Day">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Daily"/>
+        <rdfs:label>New Active Users per Day</rdfs:label>
+        <rdfs:seeAlso>http://wikiba.se/metrics#Active_Users</rdfs:seeAlso>
+    </owl:NamedIndividual>
+
+
+
     <!-- http://wikiba.se/metrics#Pages -->
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Pages">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_pages.tsv</dataSourceFile>
-        <rdfs:isDefinedBy># of pages created on wikidata</rdfs:isDefinedBy>
-        <updateFrequency>Monthly</updateFrequency>
+        <updateFrequency>Daily</updateFrequency>
+        <rdfs:comment>countable pages are pages which contain an internal link (aka wikilink), category or property link, and are not a redirect page.</rdfs:comment>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_total_pages.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -228,8 +285,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Properties">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_properties.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Property</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -238,8 +295,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_refstmts.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -248,8 +305,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_to_Other_Sources_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
-        <dataSourceFile>wikidata_content_refstmts_other.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -258,7 +315,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_to_Wikipedia_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_refstmts_wikipedia.tsv</dataSourceFile>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -269,7 +326,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#References_Overview">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Monthly</updateFrequency>
-        <dataSourceFile>wikidata_content_references_overview.tsv</dataSourceFile>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Reference</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -278,7 +335,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#References_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_references.tsv</dataSourceFile>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Reference</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
@@ -288,8 +345,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Statement_Ranks">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Rank</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
-        <dataSourceFile>wikidata_content_statement_ranks.tsv</dataSourceFile>
     </owl:NamedIndividual>
 
 
@@ -298,18 +355,18 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Statements_per_Item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_statement_item.tsv</dataSourceFile>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
 
 
-    <!-- http://wikiba.se/metrics#Twitter_Subscribers -->
+    <!-- http://wikiba.se/metrics#Twitter -->
 
-    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Twitter_Subscribers">
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Twitter">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
-        <updateFrequency>Monthly</updateFrequency>
-        <rdfs:isDefinedBy># of new twitter subscribers</rdfs:isDefinedBy>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_twitter.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -318,8 +375,18 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Wikimedia_links_per_item">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <dataSourceFile>wikidata_content_wikimedia_links_item.tsv</dataSourceFile>
         <updateFrequency>Monthly</updateFrequency>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#getClaim_Property_Use_count -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#getClaim_Property_Use_count">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Developer"/>
+        <rdfs:label>getClaim Property Use count</rdfs:label>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/getclaims_property_use.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -346,8 +413,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#mailing_list_subscribers_-l">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <updateFrequency>Monthly</updateFrequency>
-        <rdfs:isDefinedBy># of new mailinglist subscribers - l-</rdfs:isDefinedBy>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_mail.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -356,7 +423,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#mailing_list_subscribers_-tech">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <updateFrequency>Monthly</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_techmail.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -365,7 +433,17 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#newsletter_subscribers">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <updateFrequency>Monthly</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_newsletter.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
+    </owl:NamedIndividual>
+
+
+
+    <!-- http://wikiba.se/metrics#number_of_editors_who_first_edited_in_the_specified_month_and_also_went_on_to_make_at_least_one_edit_12_months_later -->
+
+    <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_editors_who_first_edited_in_the_specified_month_and_also_went_on_to_make_at_least_one_edit_12_months_later">
+        <rdf:type rdf:resource="http://wikiba.se/metrics#Community_Health"/>
+        <rdfs:label>number of editors who first edited in the specified month and also went on to make at least one edit 12 months later</rdfs:label>
     </owl:NamedIndividual>
 
 
@@ -374,6 +452,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_statements_with_a_non-Wikimedia_reference_as_of_a_given_month">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
+        <rdfs:label>percentage of statements with a non-Wikimedia reference as of a given month</rdfs:label>
         <rdfs:seeAlso rdf:datatype="&xsd;anyURI">https://tools.wmflabs.org/wikidata-todo/stats.php</rdfs:seeAlso>
         <rdfs:comment>Total number is reported every two weeks in &quot;Statements referenced to other sources&quot;</rdfs:comment>
     </owl:NamedIndividual>
@@ -384,8 +463,13 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_active_editors_who_make_5,_100_edits_in_given_month,_rolling_30_day_window">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Community_Health"/>
+        <rdfs:label>number of active editors who make 5, 100 edits in given month, rolling 30 day window</rdfs:label>
         <rdfs:seeAlso>https://stats.wikimedia.org/wikispecial/EN/TablesWikipediaWIKIDATA.htm</rdfs:seeAlso>
-        <rdfs:comment>Reported by month in &quot;Statistics Wikidata&quot; per longstanding standard definitions.</rdfs:comment>
+        <rdfs:comment>Reported by month in &quot;Statistics Wikidata&quot;. (seeAlso)
+
+An &apos;active editor&apos; is a registered (and signed in) person (not known as a bot) who makes 5 or more edits in any month in mainspace on countable pages.
+
+Note: This definition differs from that of &quot;active users&quot; in Special:Statistics, which counts any account with an action recorded in the RC table during the last 30 days - see the source code of SpecialActiveusers.php for more details.)</rdfs:comment>
     </owl:NamedIndividual>
 
 
@@ -394,6 +478,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_items_or_statements_contributed_by_partnership_A,_..._partnership_Z_in_a_given_month,_broken_down_by_quality,_edited_statements,_setup_length,_community_onboarding_time,_technical_audit,_size_of_institution,_usage_of_data_after_launch">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Partnerships"/>
+        <rdfs:label>number of items or statements contributed by partnership A, ... partnership Z in a given month, broken down by quality, edited statements, setup length, community onboarding time, technical audit, size of institution, usage of data after launch</rdfs:label>
         <rdfs:comment>Should be fairly straightforward to track once actual partnerships exist and quality/usage measures mature; see https://commons.wikimedia.org/wiki/Commons:Partnerships for pre-existing models in Wikimedia Commons</rdfs:comment>
     </owl:NamedIndividual>
 
@@ -403,6 +488,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#number_of_queries_by_non-browser_app_A,_...,_non-browser_app_Z_in_given_month,_rolling_30_day_window">
         <rdf:type rdf:resource="http://wikiba.se/metrics#External_Use"/>
+        <rdfs:label>number of queries by non-browser app A,...,non-browser app Z in given month, rolling 30 day window</rdfs:label>
         <rdfs:comment>In principle obtainable via Hadoop analysis of logs; application-breakdown can be tricky as we don&apos;t require API keys and user-agents may be unhelpful</rdfs:comment>
     </owl:NamedIndividual>
 
@@ -412,6 +498,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage/number_of_infoboxes_in_Wikipedia_which_use_1,_...,_n_statements_from_Wikidata_as_of_a_given_month">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Internal_Use"/>
+        <rdfs:label>percentage/number of infoboxes in Wikipedia which use 1, ..., n statements from Wikidata as of a given_month</rdfs:label>
         <rdfs:comment>Depends on usage tracking support for items, which is being gradually rolled out as of May 2015, see https://phabricator.wikimedia.org/T49288</rdfs:comment>
     </owl:NamedIndividual>
 
@@ -421,6 +508,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage/number_of_pages_in_Wikimedia_wikis_which_use_1,_...,_n_statements_from_Wikidata_as_of_a_given_month">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Internal_Use"/>
+        <rdfs:label>percentage/number of pages in Wikimedia wikis which use 1, ..., n statements from Wikidata as of a given month</rdfs:label>
         <rdfs:comment>Depends on usage tracking support for items, which is being gradually rolled out as of May 2015, see https://phabricator.wikimedia.org/T49288</rdfs:comment>
     </owl:NamedIndividual>
 
@@ -430,6 +518,7 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#percentage_of_items_with_a_quality_score_according_to_scoring_algorithm_A,_...,_scoring_algorithm_Z_higher_than_0,_...,_1">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Quality"/>
+        <rdfs:label>percentage of items with a quality score according to scoring algorithm A, ..., scoring algorithm Z higher than 0, ..., 1</rdfs:label>
         <rdfs:comment>Experimental Wikipedia-centric work ongoing at https://meta.wikimedia.org/wiki/Research:Revision_scoring_as_a_service , Wikidatan User:Ladsgroup is peripherally involved to assess value for fighting spam on Wikidata</rdfs:comment>
     </owl:NamedIndividual>
 </rdf:RDF>
@@ -437,3 +526,4 @@
 
 
 <!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
+

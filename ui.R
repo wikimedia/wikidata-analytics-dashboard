@@ -9,8 +9,8 @@ header <- dashboardHeader(title = "Wikidata Metrics", disable = FALSE)
 #Sidebar elements for the visualisations.
 sidebar <- dashboardSidebar(
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "stylesheet.css"),
-    tags$script(src = "app-options.js")
+    tags$script(src = "app-options.js"),
+    tags$script(src = "app-events.js")
   ),
   sidebarMenu(
     id = "tabs",
@@ -19,7 +19,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Site", icon = icon("signal"),
              menuSubItem(text = "Edits/Day", tabName = "wikidata_daily_edits_delta"),
              menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
-             menuSubItem(text = "New Users/Day", tabName = "wikidata_daily_users_delta")),
+             menuSubItem(text = "New Active Users/Day", tabName = "wikidata_daily_users_delta")),
     menuItem(text = "Developer", icon = icon("gears"),
              menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
     menuItem(text = "Social Stats", icon = icon("heart"),
