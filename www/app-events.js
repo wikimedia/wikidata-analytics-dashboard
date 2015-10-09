@@ -1,5 +1,5 @@
-$(function() {
+//$(function() {
     // Reveals the first dropdown menu at launch:
-    $('ul.sidebar-menu li.treeview').first().addClass('active');
+//    $('ul.sidebar-menu li.treeview').first().addClass('active');
 
-});
+//});

@@ -16,14 +16,17 @@ sidebar <- dashboardSidebar(
     id = "tabs",
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
     menuItem(text = "", badgeLabel = "Recent", badgeColor = "green"),
-    menuItem(text = "Site", icon = icon("signal"),
+    menuItem(text = "Frequency Stats", icon = icon("signal"),
              menuSubItem(text = "Edits/Day", tabName = "wikidata_daily_edits_delta"),
              menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
              menuSubItem(text = "New Active Users/Day", tabName = "wikidata_daily_users_delta")),
     menuItem(text = "Developer", icon = icon("gears"),
              menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
-    menuItem(text = "Social Stats", icon = icon("heart"),
-             menuSubItem(text = "Networks", tabName = "wikidata_daily_social")),
+#    menuItem(text = "Social Stats", icon = icon("heart"),
+#             menuSubItem(text = "Networks", tabName = "wikidata_daily_social")),
+    menuItem(text = "", badgeLabel = "Weekly RDF Stats", badgeColor = "red"),
+    menuItem(text = "Queries", icon = icon("question"),
+             menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries")),
     menuItem(text = "", badgeLabel = "Monthly", badgeColor = "purple"),
     menuItem(text = "Engagement", icon = icon("eye"),
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
@@ -84,6 +87,11 @@ body <- dashboardBody(
               uiOutput("metric_meta_getclaims_title")
             ),
             DT::dataTableOutput("wikidata_daily_getclaims_property_use_table")),
+    tabItem(tabName = "wikidata_rdf_queries",
+            fluidRow(
+              uiOutput("metric_meta_rdf_queries")
+            ),
+            DT::dataTableOutput("wikidata_rdf_queries_table")),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")
@@ -119,6 +127,9 @@ body <- dashboardBody(
             htmlOutput("legend_lists_messages")),
     tabItem(tabName = "wikidata_pages",
             dygraphOutput("wikidata_pages_plot"),
+            htmlOutput("legend_pages_monthly"),
+            checkboxInput("checkbox_total_pages_monthly", label = "Show total Pages", value = TRUE),
+            checkboxInput("checkbox_total_gooditems_monthly", label = "Show total Content Pages", value = FALSE),
             fluidRow(
               tags$br(),
               uiOutput("metric_meta_pages"),

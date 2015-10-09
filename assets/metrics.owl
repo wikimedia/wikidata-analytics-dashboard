@@ -275,7 +275,7 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Pages">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
         <updateFrequency>Daily</updateFrequency>
-        <rdfs:comment>countable pages are pages which contain an internal link (aka wikilink), category or property link, and are not a redirect page.</rdfs:comment>
+        <rdfs:comment>content pages are pages which contain an internal link (aka wikilink), category or property link, and are not a redirect page.</rdfs:comment>
         <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_total_pages.tsv</dataSourceURI>
     </owl:NamedIndividual>
 

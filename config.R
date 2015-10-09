@@ -13,6 +13,7 @@ library(curl)
 library(rrdf)
 library(data.table)
 library(DT)
+library(XML)
 data_uri <- "/srv/dashboards/shiny-server/wdm/data/"
 source_data_uri <- "http://wdm-data.wmflabs.org/data/"
 agg_data_uri <- "http://datasets.wikimedia.org/aggregate-datasets/wikidata/"

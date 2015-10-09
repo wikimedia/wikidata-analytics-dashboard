@@ -19,20 +19,20 @@ shinyServer(function(input, output, session) {
         updateTabItems(session, "tabs", input$switchtab)
     })
     #Home
-    latest_frame <- data.frame(tail(wikidata_edits,1), tail(wikidata_active_users,1), tail(wikidata_pages,1),tail(wikidata_gooditems,1),tail(wikidata_facebook,1),tail(wikidata_googleplus,1),tail(wikidata_twitter,1),tail(wikidata_identica,1),tail(wikidata_irc,1))
+    latest_frame <- data.frame(tail(wikidata_edits,1), tail(wikidata_active_users,1), tail(wikidata_pages,1),tail(wikidata_gooditems,1))
     dt_latest <- data.table(latest_frame)
-    dt_latest <- setnames(dt_latest, c("Date", "Edits", "date.1", "Active Users", "date.2", "Pages", "date.3", "Content Pages", "date.4", "Facebook Likes", "date.5", "Google+ Followers", "date.6","Twitter Followers", "date.7","Identica Followers", "date.8","IRC"))
-    dt_latest <- dt_latest[, list(Date, Edits, `Active Users`,Pages,`Content Pages`,`Facebook Likes`,`Google+ Followers`,`Twitter Followers`,`Identica Followers`,IRC)]
+    dt_latest <- setnames(dt_latest, c("Date", "Edits", "date.1", "Active Users", "date.2", "Pages", "date.3", "Content Pages"))
+    dt_latest <- dt_latest[, list(Date, Edits, `Active Users`,Pages,`Content Pages`)]
     df_out <- t(dt_latest)
     output$wikidata_daily_summary_table <- DT::renderDataTable(
     datatable(df_out, class = "display compact", colnames = c("Property", "Value"), caption = "Statistics Today"))
     # http://wikiba.se/metrics#RecentEdits
-    wikidata_recent_edits <- wikidata_edits[which(wikidata_edits$date > existing_date - 7),]
+    wikidata_recent_edits <- wikidata_edits[which(wikidata_edits$date > Sys.Date() - 8),]
     df_recent_edits <- wikidata_recent_edits[order(wikidata_recent_edits$date, decreasing =TRUE),]
     dt_recent_edits <- data.table(df_recent_edits)
+    wikidata_daily_edits_delta <- dt_recent_edits[, list(date, count, diff_count=diff(count)*-1)]
     output$wikidata_daily_edits_delta_plot <- renderDygraph({
-      wikidata_daily_edits_delta <- dt_recent_edits[, list(date, count, diff_count=diff(count)*-1)]
-      return(dygraph(wikidata_daily_edits_delta,
+      return(dygraph(wikidata_daily_edits_delta[1:7],
                      main = "Wikidata Edits/Day Last 7 Days",
                      ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_site", labelsSeparateLines = TRUE) %>%
@@ -44,15 +44,15 @@ shinyServer(function(input, output, session) {
     })
     # http://wikiba.se/metrics#RecentPages
     df_pages_ordered <- wikidata_pages[order(wikidata_pages$date, decreasing =TRUE),]
-    df_recent_pages <- df_pages_ordered[1:11,]
+    df_recent_pages <- df_pages_ordered[1:8,]
     df_gooditems_ordered <- wikidata_gooditems[order(wikidata_gooditems$date, decreasing =TRUE),]
-    df_recent_gooditems <- df_gooditems_ordered[1:11,]
+    df_recent_gooditems <- df_gooditems_ordered[1:8,]
     df_recent_content <- data.frame(df_recent_pages, df_recent_gooditems)
     dt_recent_content <- data.table(df_recent_content)
     dt_recent_content <- dt_recent_content[, list(date, count, count.1)]
     output$wikidata_daily_pages_delta_plot <- renderDygraph({
       wikidata_daily_pages_delta <- dt_recent_content[, list(date, count, diff_pages=diff(count)*-1, count.1, diff_contentpages=diff(count.1)*-1)]
-      return(dygraph(wikidata_daily_pages_delta,
+      return(dygraph(wikidata_daily_pages_delta[1:7],
                      main = "Wikidata New Pages/Day Last 7 Days",
                      ylab = "") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_pages", labelsSeparateLines = TRUE) %>%
@@ -64,12 +64,12 @@ shinyServer(function(input, output, session) {
                dyVisibility(visibility=c(input$checkbox_total_pages, TRUE, input$checkbox_total_gooditems, TRUE)))
     })
     # http://wikiba.se/metrics#RecentUsers
-    wikidata_recent_users <- wikidata_active_users[which(wikidata_active_users$date > existing_date - 7),]
+    wikidata_recent_users <- wikidata_active_users[which(wikidata_active_users$date > Sys.Date() - 8),]
     df_recent_users <- wikidata_recent_users[order(wikidata_recent_users$date, decreasing =TRUE),]
     dt_recent_users <- data.table(df_recent_users)
     output$wikidata_daily_users_delta_plot <- renderDygraph({
       wikidata_daily_users_delta <- dt_recent_users[, list(date, count, diff_count=diff(count)*-1)]
-      return(dygraph(wikidata_daily_users_delta,
+      return(dygraph(wikidata_daily_users_delta[1:7],
                      main = "Wikidata New Active Users/Day Last 7 Days") %>%
                dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_users", labelsSeparateLines = TRUE) %>%
                dyAxis("y", label = "Active Users", valueRange = c(-200, 200)) %>%
@@ -85,7 +85,7 @@ shinyServer(function(input, output, session) {
     })
     # http://wikiba.se/metrics#Social
     wikidata_recent_social <- data.frame(wikidata_facebook, wikidata_googleplus, wikidata_twitter, wikidata_identica, wikidata_irc)
-    wikidata_recent_social <- wikidata_recent_social[which(wikidata_recent_social$date > existing_date - 360),]
+    wikidata_recent_social <- wikidata_recent_social[which(wikidata_recent_social$date > Sys.Date() - 360),]
     dt_recent_social <- data.table(wikidata_recent_social)
     dt_recent_social <- dt_recent_social[, list(date, likes, followers, followers.1, followers.2, members)]
     output$wikidata_daily_social_plot <- renderDygraph({
@@ -114,6 +114,18 @@ shinyServer(function(input, output, session) {
     aggr_props <- aggregate(wikidata_daily_getclaims_property_use$count, by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
     aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
     output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(datatable(aggr_props_ordered, class = "display compact", colnames = c("Property", "Value"), rownames = FALSE, options = list(pageLength = 50, autoWidth = TRUE, columnDefs = list(list(className = 'dt-left', targets = c(0,1))))))
+
+    # http://wikiba.se/metrics#RDF_Queries
+    output$metric_meta_rdf_queries <- renderUI({
+      metric_desc <- "RDF Queries"
+      box(title = "Definition", width = 6, status = "info", metric_desc)
+    })
+    qlist <- read_file("rdfq.xml")
+    rdfq <- xmlParse(qlist)
+    queries <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdf-query"))
+    output$wikidata_rdf_queries_table <- DT::renderDataTable(datatable(queries))
+
+    # http://wikiba.se/metrics#Edits
     output$wikidata_edits_plot <- renderDygraph({
       make_dygraph(wikidata_edits,
                    "", "Edits", "Wikidata Edits")
@@ -199,8 +211,23 @@ shinyServer(function(input, output, session) {
     })
     # http://wikiba.se/metrics#Pages
     output$wikidata_pages_plot <- renderDygraph({
-      make_dygraph(wikidata_pages,
-                   "", "Pages", "Wikidata Pages", legend_name = "pages")
+      df_pages_ordered <- wikidata_pages[order(wikidata_pages$date, decreasing =TRUE),]
+      df_pages <- df_pages_ordered[1:11,]
+      df_gooditems_ordered <- wikidata_gooditems[order(wikidata_gooditems$date, decreasing =TRUE),]
+      df_gooditems <- df_gooditems_ordered[1:11,]
+      df_content <- data.frame(df_pages, df_gooditems)
+      dt_content <- data.table(df_content)
+      dt_content <- dt_content[, list(date, count, count.1)]
+      return(dygraph(dt_content,
+                     main = "Wikidata Pages",
+                     ylab = "") %>%
+               dyLegend(width = 400, show = "always", labelsDiv = "legend_pages_monthly", labelsSeparateLines = TRUE) %>%
+               dyOptions(useDataTimezone = TRUE,
+                         labelsKMB = TRUE,
+                         fillGraph = TRUE,
+                         strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+               dyCSS(css = custom_css) %>%
+               dyVisibility(visibility=c(input$checkbox_total_pages_monthly, input$checkbox_total_gooditems_monthly)))
     })
     output$metric_meta_pages <- renderUI({
       box(title = "Individual", width = 6, status = "primary", tags$a(href = content_obj[13], content_obj[13]))

@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<RDF>
+  <!-- PREFIX wikibase: <http://wikiba.se/ontology#> -->
+  <!-- PREFIX wdt: <http://www.wikidata.org/prop/direct/> -->
+  <!-- PREFIX wd: <http://www.wikidata.org/entity/> -->
+  <!-- PREFIX wikibase: <http://wikiba.se/ontology#> -->
+  <!-- PREFIX wdt: <http://www.wikidata.org/prop/direct/> -->
+  <!-- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> -->
+  <!-- PREFIX prov: <http://www.w3.org/ns/prov#> -->
+  <!-- PREFIX wdref: <http://www.wikidata.org/reference/> -->
+
+  <!-- Globe Coordinate Values -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {?s ?p wikibase:GlobecoordinateValue}
+  </rdf-query>
+
+  <!-- Time Values -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {?s a wikibase:TimeValue}
+  </rdf-query>
+
+  <!-- Quantity Values -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {?s a wikibase:QuantityValue}
+  </rdf-query>
+
+  <!-- Preferred Ranks -->
+  <rdf-query>
+  SELECT ?s (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:rank wikibase:PreferredRank
+  }
+  GROUP BY ?s
+  </rdf-query>
+
+  <!-- Qualifiers -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:qualifier ?o
+  }
+  </rdf-query>
+
+  <!-- PropertyType is Wikibase Item -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:WikibaseItem
+  }
+  </rdf-query>
+
+  <!-- PropertyType is CommonsMedia -->
+  <rdf-query>
+  SELECT ?s (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:CommonsMedia
+  }
+  GROUP BY ?s
+  </rdf-query>
+
+  <!-- PropertyType is Monolingualtext -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:Monolingualtext
+  }
+  </rdf-query>
+
+  <!-- PropertyType is Quantity -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:Quantity
+  }
+  </rdf-query>
+
+  <!-- PropertyType is String -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:String
+  }
+  </rdf-query>
+
+  <!-- PropertyType is Time -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:Time
+  }
+  </rdf-query>
+
+  <!-- PropertyType is URL -->
+  <rdf-query>
+  SELECT (count(distinct(?s)) AS ?scount) WHERE {
+    ?s wikibase:propertyType wikibase:Url
+  }
+  </rdf-query>
+
+  <!-- Wikimedia Categories -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P31 wd:Q4167836
+    }
+  </rdf-query>
+
+  <!-- Commons Categories -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P373 ?o
+    }
+  </rdf-query>
+
+  <!-- Country of Citizenship -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P27 ?o
+    }
+  </rdf-query>
+
+  <!-- Given Name -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P735 ?o
+    }
+  </rdf-query>
+
+  <!-- Humans -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P31 wd:Q5
+    }
+  </rdf-query>
+
+  <!-- Entities with VIAF -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P214 ?o
+    }
+  </rdf-query>
+
+  <!-- Entities with OCLC -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s wdt:P243 ?o
+    }
+  </rdf-query>
+
+  <!-- Get Property Label -->
+  <rdf-query>
+  SELECT distinct ?o WHERE {
+    wd:P735 ?p ?o
+    SERVICE wikibase:label {
+      bd:serviceParam wikibase:language "en" .
+      wd:P735 rdfs:label ?o
+    }
+  }
+  </rdf-query>
+
+  <!-- Statements Referenced to Wikipedia (wdref:004ec6fbee857649acdbdbad4f97b2c8571df97b) -->
+  <rdf-query>
+    SELECT (count(distinct(?s)) AS ?scount) WHERE {
+      ?s prov:wasDerivedFrom wdref:004ec6fbee857649acdbdbad4f97b2c8571df97b
+    }
+  </rdf-query>
+</RDF>
