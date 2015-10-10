@@ -6,7 +6,7 @@ output$wikidata_edits_plot <- renderDygraph({
                "", "Edits", "Wikidata Edits")
 })
 output$editdelta <- renderInfoBox({
-  wikidata_edits_30day <- wikidata_edits[which(wikidata_edits$date > existing_date - 30),]
+  wikidata_edits_30day <- wikidata_edits[which(wikidata_edits$date > Sys.Date() - 30),]
   edits_first <- tail(wikidata_edits_30day[order(wikidata_edits_30day$date, decreasing =TRUE),],1)
   edits_current <- head(wikidata_edits_30day[order(wikidata_edits_30day$date, decreasing =TRUE),],1)
   period_last <- format(edits_first[1])

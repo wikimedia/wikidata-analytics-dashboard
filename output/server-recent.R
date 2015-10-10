@@ -56,9 +56,8 @@ output$metric_meta_recent_pages_seeAlso <- renderUI({
   standard_seeAlso_box(metric_desc[1])
 })
 # http://wikiba.se/metrics#RecentUsers
-wikidata_recent_users <- wikidata_active_users[which(wikidata_active_users$date > Sys.Date() - 8),]
-df_recent_users <- wikidata_recent_users[order(wikidata_recent_users$date, decreasing =TRUE),]
-dt_recent_users <- data.table(wikidata_active_users)
+df_recent_users <- wikidata_active_users[order(wikidata_active_users$date, decreasing =TRUE),]
+dt_recent_users <- data.table(df_recent_users)
 output$wikidata_daily_users_delta_plot <- renderDygraph({
   wikidata_daily_users_delta <- dt_recent_users[, list(date, count, diff_count=diff(count)*-1)]
   return(dygraph(wikidata_daily_users_delta,
