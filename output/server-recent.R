@@ -34,7 +34,8 @@ df_pages_ordered <- wikidata_pages[order(wikidata_pages$date, decreasing =TRUE),
 df_recent_pages <- df_pages_ordered
 df_gooditems_ordered <- wikidata_gooditems[order(wikidata_gooditems$date, decreasing =TRUE),]
 df_recent_gooditems <- df_gooditems_ordered
-df_recent_content <- data.frame(df_recent_pages, df_recent_gooditems)
+good_items_nrow <- nrow(df_recent_gooditems)
+df_recent_content <- data.frame(df_recent_pages[1:good_items_nrow,], df_recent_gooditems)
 dt_recent_content <- data.table(df_recent_content)
 dt_recent_content <- dt_recent_content[, list(date, count, count.1)]
 output$wikidata_daily_pages_delta_plot <- renderDygraph({

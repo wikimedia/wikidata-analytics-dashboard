@@ -22,3 +22,5 @@ output$wikidata_daily_summary_table <- DT::renderDataTable(
   formatCurrency(2:3, currency = "", interval = 3, mark = ",") %>%
   formatStyle(3, color = styleInterval(cuts, c("red", "green"))
 ))
+
+
