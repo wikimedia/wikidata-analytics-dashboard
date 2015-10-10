@@ -66,18 +66,30 @@ body <- dashboardBody(
             dygraphOutput("wikidata_daily_edits_delta_plot"),
             tags$br(),
             htmlOutput("legend_daily_site"),
-            checkboxInput("checkbox_total_edits", label = "Show total Edits", value = FALSE)),
+            checkboxInput("checkbox_total_edits", label = "Show total Edits", value = FALSE),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_recent_edits_seeAlso")
+            )),
     tabItem(tabName = "wikidata_daily_pages_delta",
             dygraphOutput("wikidata_daily_pages_delta_plot"),
             tags$br(),
             htmlOutput("legend_daily_pages"),
             checkboxInput("checkbox_total_pages", label = "Show total Pages", value = FALSE),
-            checkboxInput("checkbox_total_gooditems", label = "Show total Content Pages", value = FALSE)),
+            checkboxInput("checkbox_total_gooditems", label = "Show total Content Pages", value = FALSE),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_recent_pages_seeAlso")
+            )),
     tabItem(tabName = "wikidata_daily_users_delta",
             dygraphOutput("wikidata_daily_users_delta_plot"),
             tags$br(),
             htmlOutput("legend_daily_users"),
-            checkboxInput("checkbox_total_users", label = "Show total Users", value = FALSE)),
+            checkboxInput("checkbox_total_users", label = "Show total Users", value = FALSE),
+            tags$br(),
+            fluidRow(
+              uiOutput("metric_meta_recent_users_seeAlso")
+            )),
     tabItem(tabName = "wikidata_daily_social",
             dygraphOutput("wikidata_daily_social_plot"),
             tags$br(),

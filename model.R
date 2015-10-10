@@ -62,5 +62,6 @@ get_rdf_objects <- function(){
   partnerships_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Partnerships>")
   external_use_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#External_Use>")
   internal_use_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Internal_Use>")
+  daily_obj <<- get_rdf_individuals("<http://wikiba.se/metrics#Daily>")
   return(invisible())
 }
