@@ -10,4 +10,6 @@ output$metric_meta_getclaims_title <- renderUI({
 })
 aggr_props <- aggregate(wikidata_daily_getclaims_property_use$count, by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
 aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
-output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(datatable(aggr_props_ordered, class = "display compact", colnames = c("Property", "Value"), rownames = FALSE, options = list(pageLength = 50, autoWidth = TRUE, columnDefs = list(list(className = 'dt-left', targets = c(0,1))))))
+output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(datatable(aggr_props_ordered, class = "display compact", colnames = c("Property", "Value"), rownames = FALSE, options = list(pageLength = 50, autoWidth = TRUE, columnDefs = list(list(className = 'dt-left', targets = c(0,1))))) %>%
+formatCurrency("x", currency = "", interval = 3, mark = ",")
+)
