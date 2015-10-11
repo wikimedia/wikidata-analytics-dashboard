@@ -3,10 +3,11 @@
 # http://wikiba.se/metrics#Pages
 output$wikidata_pages_plot <- renderDygraph({
   df_pages_ordered <- wikidata_pages[order(wikidata_pages$date, decreasing =TRUE),]
-  df_pages <- df_pages_ordered[1:11,]
+  df_pages <- df_pages_ordered
   df_gooditems_ordered <- wikidata_gooditems[order(wikidata_gooditems$date, decreasing =TRUE),]
-  df_gooditems <- df_gooditems_ordered[1:11,]
-  df_content <- data.frame(df_pages, df_gooditems)
+  df_gooditems <- df_gooditems_ordered
+  good_items_nrow <- nrow(df_gooditems)
+  df_content <- data.frame(df_pages[1:good_items_nrow,], df_gooditems)
   dt_content <- data.table(df_content)
   dt_content <- dt_content[, list(date, count, count.1)]
   return(dygraph(dt_content,
