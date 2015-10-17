@@ -1,0 +1,110 @@
+
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #Bulk Query of WDQS and write to TSV
+> source("config.R")
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Attaching package: ‘scales’
+
+The following objects are masked from ‘package:readr’:
+
+    col_factor, col_numeric
+
+
+Attaching package: ‘lubridate’
+
+The following object is masked from ‘package:plyr’:
+
+    here
+
+
+Attaching package: ‘curl’
+
+The following object is masked from ‘package:readr’:
+
+    parse_date
+
+Loading required package: rJava
+Loading required package: rrdflibs
+
+Attaching package: ‘data.table’
+
+The following object is masked _by_ ‘.GlobalEnv’:
+
+    .N
+
+The following objects are masked from ‘package:lubridate’:
+
+    hour, mday, month, quarter, wday, week, yday, year
+
+The following objects are masked from ‘package:reshape2’:
+
+    dcast, melt
+
+The following object is masked from ‘package:xts’:
+
+    last
+
+> 
+> output_path = "/srv/dashboards/shiny-server/wdm/data/sparql/"
+> qlist <- read_file("./assets/rdfq.xml")
+> rdfq <- xmlParse(qlist)
+> queries <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:select", c(rdfq = "http://wikiba.se/rdfq#")))
+> prefixes <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:prefix", c(rdfq = "http://wikiba.se/rdfq#")))
+> comments <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfs:comment", c(rdfs = "http://www.w3.org/2000/01/rdf-schema#")))
+> 
+> get_sparql_result <- function(uri = wdqs_uri, prefix, query) {
++   # escape_query <- curl_escape(query)
++   xml_result <- readLines(curl(paste0(uri, prefix, query)))
++   doc = xmlParse(xml_result)
++   result = xmlToDataFrame(nodes = getNodeSet(doc, "//sq:literal", c(sq = "http://www.w3.org/2005/sparql-results#")))
++   return(result)
++ }
+> 
+> write_tsv <- function(x, filename){
++   file_uri <- paste0(output_path, filename)
++   out = data.frame(Sys.Date(), x)
++   write.table(out, file=file_uri, append = TRUE, sep = "\t", row.names = FALSE, col.names = FALSE)
++ }
+> 
+> bulk_sparql_query <- function(esc_queries) {
++   for(q in esc_queries) {
++     x <- get_sparql_result(wdqs_uri, pfx, q)
++     tsv_file <- paste0("spql", match(q, esc_queries), ".tsv")
++     write_tsv(x, tsv_file)
++   }
++ }
+> 
+> esc_queries <- lapply(queries$text, curl_escape)
+> pfx <- paste(prefixes$text, collapse="")
+> bulk_sparql_query (esc_queries)
+> 
+> proc.time()
+   user  system elapsed 
+ 30.308  27.488  57.795 

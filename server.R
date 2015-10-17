@@ -8,6 +8,7 @@ get_data <- function(updateProgress = NULL) {
   if (is.function(updateProgress)) {
     updateProgress(detail = "getting local ...")
     get_local_datasets()
+    get_local_sparql_results()
     updateProgress(detail = "getting remote ...")
     get_remote_datasets()
     updateProgress(detail = "getting rdf ...")

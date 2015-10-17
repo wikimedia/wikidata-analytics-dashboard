@@ -18,19 +18,26 @@ get_local_datasets <- function(){
   return(invisible())
 }
 
+get_local_sparql_results <- function(){
+  sparql1 <<- get_local_set("spql1.tsv", sparql_data_uri)
+  sparql2 <<- get_local_set("spql2.tsv", sparql_data_uri)
+  sparql3 <<- get_local_set("spql3.tsv", sparql_data_uri)
+  return(invisible())
+}
+
 get_remote_datasets <- function(){
   out <- tryCatch({
         con <- curl(agg_data_uri)
         readLines(con)
       },
       warning = function(cond){
-        message(paste("URL caused a warning:", uri))
+        message(paste("URL caused a warning:", agg_data_uri))
         message("Warning message:")
         message(cond)
         return(NULL)
       },
       error = function(cond){
-        message(paste("URL does not exist:", uri))
+        message(paste("URL does not exist:", agg_data_uri))
         message("Error message:")
         message(cond)
         return(NA)

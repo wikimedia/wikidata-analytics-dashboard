@@ -80,23 +80,3 @@ output$metric_meta_recent_users_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",daily_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
   standard_seeAlso_box(metric_desc[1])
 })
-# http://wikiba.se/metrics#Social
-wikidata_recent_social <- data.frame(wikidata_facebook, wikidata_googleplus, wikidata_twitter, wikidata_identica, wikidata_irc)
-wikidata_recent_social <- wikidata_recent_social[which(wikidata_recent_social$date > Sys.Date() - 360),]
-dt_recent_social <- data.table(wikidata_recent_social)
-dt_recent_social <- dt_recent_social[, list(date, likes, followers, followers.1, followers.2, members)]
-output$wikidata_daily_social_plot <- renderDygraph({
-  return(dygraph(dt_recent_social,
-                 main = "Wikidata Social Media",
-                 ylab = "") %>%
-           dyLegend(width = 400, show = "always", labelsDiv = "legend_daily_social", labelsSeparateLines = TRUE) %>%
-           dySeries("likes", label = "Facebook") %>%
-           dySeries("followers", label = "Google+") %>%
-           dySeries("followers.1", label = "Twitter") %>%
-           dySeries("followers.2", label = "Identica") %>%
-           dySeries("members", label = "IRC") %>%
-           dyOptions(useDataTimezone = TRUE,
-                     labelsKMB = TRUE,
-                     strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
-           dyCSS(css = custom_css))
-})

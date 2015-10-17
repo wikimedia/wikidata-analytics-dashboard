@@ -8,6 +8,7 @@ output$metric_meta_rdf_queries <- renderUI({
 qlist <- read_file("./assets/rdfq.xml")
 rdfq <- xmlParse(qlist)
 queries <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:select", c(rdfq = "http://wikiba.se/rdfq#")))
+prefixes <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:prefix", c(rdfq = "http://wikiba.se/rdfq#")))
 comments <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfs:comment", c(rdfs = "http://www.w3.org/2000/01/rdf-schema#")))
 dt_queries <- data.table(queries)
 dt_queries$id <- seq_len(nrow(queries))

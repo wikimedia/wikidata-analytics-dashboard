@@ -6,7 +6,7 @@ Install the dependencies:
 $ R
 > install.packages(c("curl", "httpuv", "readr", "xts", "reshape2",
     "RColorBrewer", "shiny", "shinydashboard", "dygraphs", "markdown",
-    "ggplot2", "toOrdinal", "plyr", "lubridate", "magrittr", "data.table"))
+    "ggplot2", "toOrdinal", "plyr", "lubridate", "magrittr", "data.table", "XML", "DT"))
 ```
 
 Install RRDF Support:

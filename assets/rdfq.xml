@@ -10,15 +10,14 @@
 
 <RDF xmlns="http://wikiba.se/rdfq#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-  <!-- PREFIX wikibase: <http://wikiba.se/ontology#> -->
-  <!-- PREFIX wdt: <http://www.wikidata.org/prop/direct/> -->
-  <!-- PREFIX wd: <http://www.wikidata.org/entity/> -->
-  <!-- PREFIX wikibase: <http://wikiba.se/ontology#> -->
-  <!-- PREFIX wdt: <http://www.wikidata.org/prop/direct/> -->
-  <!-- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> -->
-  <!-- PREFIX prov: <http://www.w3.org/ns/prov#> -->
-  <!-- PREFIX wdref: <http://www.wikidata.org/reference/> -->
-
+  <prefixes>
+    <prefix>PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3E</prefix>
+    <prefix>PREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E</prefix>
+    <prefix>PREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E</prefix>
+    <prefix>PREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E</prefix>
+    <prefix>PREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3E</prefix>
+    <prefix>PREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3E</prefix>
+  </prefixes>
   <!-- Globe Coordinate Values -->
   <rdf-query>
     <select>SELECT (count(distinct(?s)) AS ?scount) WHERE {?s ?p wikibase:GlobecoordinateValue}</select>
@@ -150,3 +149,4 @@
     <rdfs:comment>Statements Referenced to Wikipedia (with GUID x)</rdfs:comment>
   </rdf-query>
 </RDF>
+

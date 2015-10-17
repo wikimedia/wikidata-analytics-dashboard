@@ -157,19 +157,6 @@ get_rdf_individuals <- function(obj) {
   return(individuals)
 }
 
-get_sparql_result <- function(query, uri = wdqs_uri) {
- # escape_query <- curl_escape(query)
-  xml_result <- readLines(curl(paste0(uri, query)))
-  doc = xmlParse(xml_result)
-  result = xmlToDataFrame(nodes = getNodeSet(doc, "//sq:literal", c(sq = "http://www.w3.org/2005/sparql-results#")))
-  return(result)
-}
-
-write_tsv <- function(x, filename){
-  out = data.frame(Sys.Date(), result)
-  write.table(out, file=filename, append = TRUE, sep = "\t", row.names = FALSE)
-}
-
 dyVisibility <- function (dygraph, visibility = TRUE){
   dygraph$x$attrs$visibility <- visibility
   dygraph
@@ -186,3 +173,5 @@ standard_individual_box <- function(value) {
 standard_seeAlso_box <- function(value) {
   return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href = value, value, target="_blank")))
 }
+
+
