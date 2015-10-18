@@ -1,8 +1,3 @@
-library(shiny)
-library(shinydashboard)
-library(dygraphs)
-options(scipen = 500)
-
 #Header elements for the visualisation
 header <- dashboardHeader(title = "Wikidata Metrics", disable = FALSE)
 
@@ -72,7 +67,8 @@ body <- dashboardBody(
             tags$br(),
             fluidRow(
               uiOutput("metric_meta_recent_edits_seeAlso")
-            )),
+            ),
+            tags$a(href="./?t=wikidata_daily_edits_delta", "Link here: ", icon("external-link"))),
     tabItem(tabName = "wikidata_daily_pages_delta",
             dygraphOutput("wikidata_daily_pages_delta_plot"),
             tags$br(),
@@ -82,7 +78,8 @@ body <- dashboardBody(
             tags$br(),
             fluidRow(
               uiOutput("metric_meta_recent_pages_seeAlso")
-            )),
+            ),
+            tags$a(href="./?t=wikidata_daily_pages_delta", "Link here: ", icon("external-link"))),
     tabItem(tabName = "wikidata_daily_users_delta",
             dygraphOutput("wikidata_daily_users_delta_plot"),
             tags$br(),
@@ -91,7 +88,8 @@ body <- dashboardBody(
             tags$br(),
             fluidRow(
               uiOutput("metric_meta_recent_users_seeAlso")
-            )),
+            ),
+            tags$a(href="./?t=wikidata_daily_users_delta", "Link here: ", icon("external-link"))),
     tabItem(tabName = "wikidata_daily_social",
             dygraphOutput("wikidata_daily_social_plot"),
             tags$br(),

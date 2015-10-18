@@ -1,8 +1,3 @@
-## Version 0.2.0
-source("config.R")
-source("model.R")
-source("utils.R")
-
 #Load Data
 get_data <- function(updateProgress = NULL) {
   if (is.function(updateProgress)) {
@@ -20,17 +15,26 @@ get_data <- function(updateProgress = NULL) {
 #Start Server
 function(input, output, session) {
 
-  progress <- shiny::Progress$new()
-  progress$set(message = "Fetching data", value = 0)
-  on.exit(progress$close())
-  updateProgress <- function(value = NULL, detail = NULL) {
-    if (is.null(value)) {
-      value <- progress$getValue()
-      value <- value + (progress$getMax() - value) / 5
+    progress <- shiny::Progress$new()
+    progress$set(message = "Fetching data", value = 0)
+    on.exit(progress$close())
+    updateProgress <- function(value = NULL, detail = NULL) {
+      if (is.null(value)) {
+        value <- progress$getValue()
+        value <- value + (progress$getMax() - value) / 5
+      }
+      progress$set(value = value, detail = detail)
     }
-    progress$set(value = value, detail = detail)
-  }
-  get_data(updateProgress)
+    get_data(updateProgress)
+
+    observe({
+      context <- parseQueryString(session$clientData$url_search)
+      if (!is.null(context$t)) {
+        observeEvent(context$t, {
+          updateTabItems(session, "tabs", context$t)
+        })
+      }
+    })
 
     observeEvent(input$switchtab, {
         updateTabItems(session, "tabs", input$switchtab)
