@@ -170,8 +170,8 @@ standard_individual_box <- function(value) {
   return(box(title = "Individual", width = 12, status = "primary", tags$a(href = value, value)))
 }
 
-standard_seeAlso_box <- function(value) {
-  return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href = value, value, target="_blank")))
+standard_seeAlso_box <- function(href, value) {
+  return(box(title = "seeAlso", width = 6, status = "primary", tags$a(value, href=href, target="_blank")))
 }
 
 

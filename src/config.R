@@ -19,10 +19,13 @@ library(data.table)
 library(DT)
 library(XML)
 
-data_uri <- "/srv/dashboards/shiny-server/wdm/data/"
-sparql_data_uri <- "/srv/dashboards/shiny-server/wdm/data/sparql/"
+base_uri <- "/srv/dashboards/shiny-server/wdm/"
+data_uri <- paste0(base_uri, "data/")
+sparql_data_uri <- paste0(data_uri, "sparql/")
+custom_css <- paste0(base_uri, "assets/css/custom.css")
+metrics_rdf <- paste0(base_uri, "assets/metrics.owl")
+
 source_data_uri <- "http://wdm-data.wmflabs.org/data/"
 agg_data_uri <- "http://datasets.wikimedia.org/aggregate-datasets/wikidata/"
 wdqs_uri <- "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query="
-custom_css <- "./assets/css/custom.css"
-metrics_rdf <- "/srv/dashboards/shiny-server/wdm/assets/metrics.owl"
+

@@ -11,10 +11,10 @@
 
 <rdf:RDF xmlns="http://wikiba.se/metrics#"
      xml:base="http://wikiba.se/metrics"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <owl:Ontology rdf:about="http://wikiba.se/metrics#"/>
 
 
@@ -27,6 +27,12 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+
+
+
+    <!-- http://wikiba.se/metrics#dashboardReference -->
+
+    <owl:AnnotationProperty rdf:about="http://wikiba.se/metrics#dashboardReference"/>
 
 
 
@@ -154,9 +160,10 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Active_Users">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_active_users.tsv</dataSourceURI>
         <rdfs:comment>any account with an action recorded in the RC table during the last 30 days - see the source code of SpecialActiveusers.php for more details.</rdfs:comment>
         <updateFrequency>Daily</updateFrequency>
+        <dashboardReference>./?t=wikidata_active_users</dashboardReference>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_active_users.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -174,9 +181,10 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Edits">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Engagement"/>
-        <rdfs:comment>updates to countable pages (in #Content namespaces).  Also includes new page creation.</rdfs:comment>
-        <updateFrequency>Daily</updateFrequency>
         <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_total_edits.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
+        <rdfs:comment>updates to countable pages (in #Content namespaces).  Also includes new page creation.</rdfs:comment>
+        <dashboardReference>./?t=wikidata_edits</dashboardReference>
     </owl:NamedIndividual>
 
 
@@ -235,8 +243,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Items">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <updateFrequency>Monthly</updateFrequency>
         <rdfs:isDefinedBy>http://wikiba.se/ontology#Item</rdfs:isDefinedBy>
+        <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -274,9 +282,10 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Pages">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <updateFrequency>Daily</updateFrequency>
         <rdfs:comment>content pages are pages which contain an internal link (aka wikilink), category or property link, and are not a redirect page.</rdfs:comment>
         <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/site_stats_total_pages.tsv</dataSourceURI>
+        <updateFrequency>Daily</updateFrequency>
+        <dashboardReference>./?t=wikidata_pages</dashboardReference>
     </owl:NamedIndividual>
 
 
@@ -295,8 +304,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <updateFrequency>Monthly</updateFrequency>
         <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
+        <updateFrequency>Monthly</updateFrequency>
     </owl:NamedIndividual>
 
 
@@ -315,8 +324,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Referenced_Statements_to_Wikipedia_by_Type">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Statement</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -345,8 +354,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Statement_Ranks">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Content"/>
-        <rdfs:isDefinedBy>http://wikiba.se/ontology#Rank</rdfs:isDefinedBy>
         <updateFrequency>Monthly</updateFrequency>
+        <rdfs:isDefinedBy>http://wikiba.se/ontology#Rank</rdfs:isDefinedBy>
     </owl:NamedIndividual>
 
 
@@ -365,8 +374,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#Twitter">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Social_Media"/>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_twitter.tsv</dataSourceURI>
         <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_twitter.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -385,8 +394,8 @@
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#getClaim_Property_Use_count">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Developer"/>
         <rdfs:label>getClaim Property Use count</rdfs:label>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/getclaims_property_use.tsv</dataSourceURI>
         <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/getclaims_property_use.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -413,8 +422,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#mailing_list_subscribers_-l">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_mail.tsv</dataSourceURI>
         <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_mail.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -423,8 +432,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#mailing_list_subscribers_-tech">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_techmail.tsv</dataSourceURI>
         <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_techmail.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -433,8 +442,8 @@
 
     <owl:NamedIndividual rdf:about="http://wikiba.se/metrics#newsletter_subscribers">
         <rdf:type rdf:resource="http://wikiba.se/metrics#Mailing_Lists"/>
-        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_newsletter.tsv</dataSourceURI>
         <updateFrequency>Daily</updateFrequency>
+        <dataSourceURI>http://datasets.wikimedia.org/aggregate-datasets/wikidata/social_newsletter.tsv</dataSourceURI>
     </owl:NamedIndividual>
 
 
@@ -526,3 +535,4 @@ Note: This definition differs from that of &quot;active users&quot; in Special:S
 
 
 <!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
+
