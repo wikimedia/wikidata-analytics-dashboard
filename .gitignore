@@ -2,4 +2,4 @@
 .Rproj.user/
 .RData
 .Rproj.user
-/data/sparql/*
+data/sparql/

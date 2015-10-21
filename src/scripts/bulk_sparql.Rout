@@ -17,10 +17,15 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-[Previously saved workspace restored]
-
 > #Bulk Query of WDQS and write to TSV
-> source("config.R")
+> source("/srv/dashboards/shiny-server/wdm/src/config.R")
+
+Attaching package: ‘shinydashboard’
+
+The following object is masked from ‘package:graphics’:
+
+    box
+
 Loading required package: zoo
 
 Attaching package: ‘zoo’
@@ -55,10 +60,6 @@ Loading required package: rrdflibs
 
 Attaching package: ‘data.table’
 
-The following object is masked _by_ ‘.GlobalEnv’:
-
-    .N
-
 The following objects are masked from ‘package:lubridate’:
 
     hour, mday, month, quarter, wday, week, yday, year
@@ -71,9 +72,16 @@ The following object is masked from ‘package:xts’:
 
     last
 
-> 
+
+Attaching package: ‘DT’
+
+The following objects are masked from ‘package:shiny’:
+
+    dataTableOutput, renderDataTable
+
 > output_path = "/srv/dashboards/shiny-server/wdm/data/sparql/"
-> qlist <- read_file("./assets/rdfq.xml")
+> qlist <- read_file("/srv/dashboards/shiny-server/wdm/assets/rdfq.xml")
+> 
 > rdfq <- xmlParse(qlist)
 > queries <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:select", c(rdfq = "http://wikiba.se/rdfq#")))
 > prefixes <- xmlToDataFrame(nodes = getNodeSet(rdfq, "//rdfq:prefix", c(rdfq = "http://wikiba.se/rdfq#")))
@@ -87,24 +95,35 @@ The following object is masked from ‘package:xts’:
 +   return(result)
 + }
 > 
-> write_tsv <- function(x, filename){
+> write_tsv <- function(result, filename){
++   date = Sys.Date()
 +   file_uri <- paste0(output_path, filename)
-+   out = data.frame(Sys.Date(), x)
++   out = data.frame(date, result)
 +   write.table(out, file=file_uri, append = TRUE, sep = "\t", row.names = FALSE, col.names = FALSE)
 + }
 > 
 > bulk_sparql_query <- function(esc_queries) {
 +   for(q in esc_queries) {
-+     x <- get_sparql_result(wdqs_uri, pfx, q)
-+     tsv_file <- paste0("spql", match(q, esc_queries), ".tsv")
-+     write_tsv(x, tsv_file)
++     result <- get_sparql_result(wdqs_uri, pfx, q)
++     tsv_filename <- paste0("spql", match(q, esc_queries), ".tsv")
++     write_tsv(result, tsv_filename)
 +   }
 + }
 > 
 > esc_queries <- lapply(queries$text, curl_escape)
 > pfx <- paste(prefixes$text, collapse="")
 > bulk_sparql_query (esc_queries)
+Warning messages:
+1: closing unused connection 11 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3ApropertyType%20wikibase%3AQuantity%7D) 
+2: closing unused connection 10 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3ApropertyType%20wikibase%3AMonolingualtext%7D) 
+3: closing unused connection 9 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3ApropertyType%20wikibase%3ACommonsMedia%7D) 
+4: closing unused connection 8 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3ApropertyType%20wikibase%3AWikibaseItem%7D) 
+5: closing unused connection 7 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3Aqualifier%20%3Fo%7D) 
+6: closing unused connection 6 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20wikibase%3Arank%20wikibase%3APreferredRank%7D) 
+7: closing unused connection 5 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20a%20wikibase%3AQuantityValue%7D) 
+8: closing unused connection 4 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20a%20wikibase%3ATimeValue%7D) 
+9: closing unused connection 3 (https://query.wikidata.org/bigdata/namespace/wdq/sparql?query=PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3EPREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3EPREFIX%20prov%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fprov%23%3EPREFIX%20wdref%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Freference%2F%3ESELECT%20%28count%28distinct%28%3Fs%29%29%20AS%20%3Fscount%29%20WHERE%20%7B%3Fs%20%3Fp%20wikibase%3AGlobecoordinateValue%7D) 
 > 
 > proc.time()
    user  system elapsed 
- 30.308  27.488  57.795 
+ 29.516  25.080  54.621 
