@@ -174,4 +174,7 @@ standard_seeAlso_box <- function(href, value) {
   return(box(title = "seeAlso", width = 6, status = "primary", tags$a(value, href=href, target="_blank")))
 }
 
+internal_reference_box <- function(dv, href, value) {
+  return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href=href, 'data-toggle'='tab','data-value'=dv, value)))
+}
 

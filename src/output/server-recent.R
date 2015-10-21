@@ -24,7 +24,8 @@ output$wikidata_daily_edits_delta_plot <- renderDygraph({
 output$metric_meta_recent_edits_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",daily_obj[3],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
   metric_reference <- get_rdf_metadata(paste0("<",engagement_obj[1],">"), "<http://wikiba.se/metrics#dashboardReference>")
-  standard_seeAlso_box(metric_reference, metric_desc[1])
+  reference <- "#shiny-tab-wikidata_edits"
+  internal_reference_box("wikidata_edits", reference, metric_desc[1])
 })
 # http://wikiba.se/metrics#RecentPages
 wikidata_recent_pages <- wikidata_pages[which(wikidata_pages$date > Sys.Date() - 8),]
@@ -56,7 +57,8 @@ output$wikidata_daily_pages_delta_plot <- renderDygraph({
 output$metric_meta_recent_pages_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",daily_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
   metric_reference <- get_rdf_metadata(paste0("<",content_obj[13],">"), "<http://wikiba.se/metrics#dashboardReference>")
-  standard_seeAlso_box(metric_reference, metric_desc[1])
+  reference <- "#shiny-tab-wikidata_pages"
+  internal_reference_box("wikidata_pages", reference, metric_desc[1])
 })
 # http://wikiba.se/metrics#RecentUsers
 df_recent_users <- wikidata_active_users[order(wikidata_active_users$date, decreasing =TRUE),]
@@ -81,5 +83,6 @@ output$wikidata_daily_users_delta_plot <- renderDygraph({
 output$metric_meta_recent_users_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",daily_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
   metric_reference <- get_rdf_metadata(paste0("<",engagement_obj[2],">"), "<http://wikiba.se/metrics#dashboardReference>")
-  standard_seeAlso_box(metric_reference, metric_desc[1])
+  reference <- "#shiny-tab-wikidata_active_users"
+  internal_reference_box("wikidata_active_users", reference, metric_desc[1])
 })

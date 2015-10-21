@@ -23,7 +23,7 @@ output$metric_meta_community_health <- renderUI({
 })
 output$metric_meta_community_health_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",community_health_obj[1],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
-  standard_seeAlso_box(metric_desc[1])
+  standard_seeAlso_box(metric_desc[1], metric_desc[1])
 })
 # http://wikiba.se/metrics#Quality
 output$metric_meta_quality_objects1 <- renderUI({
@@ -65,7 +65,7 @@ output$wikipedia_references_info_scorebox <- renderInfoBox({
 })
 output$metric_meta_quality2_seeAlso <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#seeAlso>")
-  standard_seeAlso_box(metric_desc[1])
+  standard_seeAlso_box(metric_desc[1], metric_desc[1])
 })
 output$metric_meta_quality2 <- renderUI({
   metric_desc <- get_rdf_metadata(paste0("<",quality_obj[2],">"), "<http://www.w3.org/2000/01/rdf-schema#comment>")

@@ -18,7 +18,7 @@ dt_join <- dt_out[dt_delta_out]
 dt_join <- dt_join[,.SD,.SDcols=c(1:2,5)]
 cuts <- 0
 output$wikidata_daily_summary_table <- DT::renderDataTable(
-  datatable(dt_join[2:5], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't'), caption = paste0("Statistics for ", dt_join[1,V1])) %>%
+  datatable(dt_join[2:5], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't', columnDefs = list(list(width='10%', targets = c(0)), list(width='30%', targets = c(1)), list(width='30%', targets = c(2)))), caption = paste0("Statistics for ", dt_join[1,V1])) %>%
   formatCurrency(2:3, currency = "", interval = 3, mark = ",") %>%
   formatStyle(3, color = styleInterval(cuts, c("red", "green"))
 ))
@@ -41,7 +41,7 @@ dv_join <- dv_out[dv_delta_out]
 dv_join <- dv_join[,.SD,.SDcols=c(1:2,5)]
 cuts <- 0
 output$wikidata_daily_datavalues_table <- DT::renderDataTable(
-  datatable(dv_join[2:4], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't'), caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
+  datatable(dv_join[2:4], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't', columnDefs = list(list(width='10%', targets = c(0)), list(width='30%', targets = c(1)), list(width='30%', targets = c(2)))), caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
     formatCurrency(2:3, currency = "", interval = 3, mark = ",") %>%
     formatStyle(3, color = styleInterval(cuts, c("red", "green"))
     ))

@@ -1,5 +1,5 @@
 #Bulk Query of WDQS and write to TSV
-source("/srv/dashboards/shiny-server/wdm/config.R")
+source("/srv/dashboards/shiny-server/wdm/src/config.R")
 output_path = "/srv/dashboards/shiny-server/wdm/data/sparql/"
 qlist <- read_file("/srv/dashboards/shiny-server/wdm/assets/rdfq.xml")
 
