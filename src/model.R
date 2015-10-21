@@ -22,6 +22,7 @@ get_local_sparql_results <- function(){
   sparql1 <<- get_local_set("spql1.tsv", sparql_data_uri)
   sparql2 <<- get_local_set("spql2.tsv", sparql_data_uri)
   sparql3 <<- get_local_set("spql3.tsv", sparql_data_uri)
+  sparql13 <<- get_local_set("spql13.tsv", sparql_data_uri)
   return(invisible())
 }
 

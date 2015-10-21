@@ -19,7 +19,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
 #    menuItem(text = "Social Stats", icon = icon("heart"),
 #             menuSubItem(text = "Networks", tabName = "wikidata_daily_social")),
-    menuItem(text = "", badgeLabel = "Weekly RDF", badgeColor = "red"),
+    menuItem(text = "", badgeLabel = "Daily RDF", badgeColor = "red"),
     menuItem(text = "Queries", icon = icon("question"),
              menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries")),
     menuItem(text = "", badgeLabel = "Monthly", badgeColor = "purple"),

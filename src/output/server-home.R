@@ -24,11 +24,11 @@ output$wikidata_daily_summary_table <- DT::renderDataTable(
 ))
 
 #Latest DataValues Table
-latest_dv <- data.frame(tail(sparql1,2), tail(sparql2,2), tail(sparql3,2))
+latest_dv <- data.frame(tail(sparql1,2), tail(sparql2,2), tail(sparql3,2), tail(sparql13,2))
 data_values_latest <- data.table(latest_dv[order(latest_dv$Sys.Date.., decreasing =TRUE),])
-dv_latest <- setnames(data_values_latest, c("Date", "GlobecoordinateValue", "date.1", "TimeValue", "date.2", "QuantityValue"))
-dv_latest <- dv_latest[, list(Date, GlobecoordinateValue, TimeValue, QuantityValue)]
-dv_delta <- dv_latest[, list(Date, GlobecoordinateValue=diff(GlobecoordinateValue)*-1, TimeValue=diff(TimeValue)*-1, QuantityValue=diff(QuantityValue)*-1)]
+dv_latest <- setnames(data_values_latest, c("Date", "GlobecoordinateValue", "date.1", "TimeValue", "date.2", "QuantityValue", "date.3", "Wikimedia Categories" ))
+dv_latest <- dv_latest[, list(Date, GlobecoordinateValue, TimeValue, QuantityValue, `Wikimedia Categories`)]
+dv_delta <- dv_latest[, list(Date, GlobecoordinateValue=diff(GlobecoordinateValue)*-1, TimeValue=diff(TimeValue)*-1, QuantityValue=diff(QuantityValue)*-1, `Wikimedia Categories`=diff(`Wikimedia Categories`)*-1)]
 dv_delta_out <- t(dv_delta[1])
 dv_latest_out <- t(dv_latest[1])
 dv_out <- data.table(dv_latest_out, keep.rownames=TRUE)
@@ -41,7 +41,7 @@ dv_join <- dv_out[dv_delta_out]
 dv_join <- dv_join[,.SD,.SDcols=c(1:2,5)]
 cuts <- 0
 output$wikidata_daily_datavalues_table <- DT::renderDataTable(
-  datatable(dv_join[2:4], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't', columnDefs = list(list(width='10%', targets = c(0)), list(width='30%', targets = c(1)), list(width='30%', targets = c(2)))), caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
+  datatable(dv_join[2:5], class = "display compact", colnames = c("Property", "Value", "Delta"), options = list(dom = 't', columnDefs = list(list(width='10%', targets = c(0)), list(width='30%', targets = c(1)), list(width='30%', targets = c(2)))), caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
     formatCurrency(2:3, currency = "", interval = 3, mark = ",") %>%
     formatStyle(3, color = styleInterval(cuts, c("red", "green"))
     ))
