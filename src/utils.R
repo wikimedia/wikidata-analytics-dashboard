@@ -6,6 +6,13 @@ download_set <- function(file, uri = data_uri){
       return(set)
 }
 
+get_csv_from_api <- function(params, uri = graphite_api_uri){
+  location <- paste0(uri, params)
+  con <- url(location);
+  set <- readr::read_csv(con, col_names = c("desc", "date", "value"), col_types = list(col_character(), col_character(), col_double()))
+  return(set)
+}
+
 get_local_set <- function(file, uri = data_uri){
   location <- paste0(uri, file)
   set <- readr::read_delim(location, delim = "\t")

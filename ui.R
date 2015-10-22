@@ -17,8 +17,9 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "New Active Users/Day", tabName = "wikidata_daily_users_delta")),
     menuItem(text = "Developer", icon = icon("gears"),
              menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
-#    menuItem(text = "Social Stats", icon = icon("heart"),
-#             menuSubItem(text = "Networks", tabName = "wikidata_daily_social")),
+    menuItem(text = "", badgeLabel = "Graphite", badgeColor = "black"),
+    menuItem(text = "Usages", icon = icon("question"),
+             menuSubItem(text = "addUsagesForPage", tabName = "wikidata_addUsagesForPage")),
     menuItem(text = "", badgeLabel = "Daily RDF", badgeColor = "red"),
     menuItem(text = "Queries", icon = icon("question"),
              menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries")),
@@ -105,6 +106,8 @@ body <- dashboardBody(
               uiOutput("metric_meta_getclaims_title")
             ),
             DT::dataTableOutput("wikidata_daily_getclaims_property_use_table")),
+    tabItem(tabName = "wikidata_addUsagesForPage",
+            dygraphOutput("wikidata_addUsagesForPage_plot")),
     tabItem(tabName = "wikidata_rdf_queries",
             fluidRow(
               uiOutput("metric_meta_rdf_queries")
