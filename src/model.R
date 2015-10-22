@@ -26,6 +26,29 @@ get_local_sparql_results <- function(){
   return(invisible())
 }
 
+get_graphite_datasets <- function(){
+  out <- tryCatch({
+    con <- curl(agg_data_uri)
+    readLines(con)
+  },
+  warning = function(cond){
+    message(paste("URL caused a warning:", agg_data_uri))
+    message("Warning message:")
+    message(cond)
+    return(NULL)
+  },
+  error = function(cond){
+    message(paste("URL does not exist:", agg_data_uri))
+    message("Error message:")
+    message(cond)
+    return(NA)
+  },
+  finally = {
+    wikidata_addUsagesForPage <<- get_csv_from_api("jobrunner.pop.wikibase-addUsagesForPage.ok.mw1004.count&format=csv",graphite_api_uri)
+  })
+  return(out)
+}
+
 get_remote_datasets <- function(){
   out <- tryCatch({
         con <- curl(agg_data_uri)

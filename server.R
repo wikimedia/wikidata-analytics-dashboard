@@ -6,6 +6,8 @@ get_data <- function(updateProgress = NULL) {
     get_local_sparql_results()
     updateProgress(detail = "getting remote ...")
     get_remote_datasets()
+    updateProgress(detail = "getting graphite ...")
+    get_graphite_datasets()
     updateProgress(detail = "getting rdf ...")
     load_rdf_model()
     get_rdf_objects()
@@ -21,7 +23,7 @@ function(input, output, session) {
     updateProgress <- function(value = NULL, detail = NULL) {
       if (is.null(value)) {
         value <- progress$getValue()
-        value <- value + (progress$getMax() - value) / 5
+        value <- value + (progress$getMax() - value) / 6
       }
       progress$set(value = value, detail = detail)
     }
@@ -46,6 +48,8 @@ function(input, output, session) {
     source('./src/output/server-recent.R', local=TRUE)
     # Developer
     source('./src/output/server-developer.R', local=TRUE)
+    # Graphite
+    source('./src/output/server-graphite.R', local=TRUE)
     # RDF
     source('./src/output/server-RDFQ.R', local=TRUE)
     # Engagement

@@ -22,6 +22,7 @@ library(XML)
 base_uri <- "/srv/dashboards/shiny-server/wdm/"
 data_uri <- paste0(base_uri, "data/")
 sparql_data_uri <- paste0(data_uri, "sparql/")
+graphite_api_uri <- "https://graphite.wikimedia.org/render/?target="
 custom_css <- paste0(base_uri, "assets/css/custom.css")
 metrics_rdf <- paste0(base_uri, "assets/metrics.owl")
 
