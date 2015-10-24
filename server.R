@@ -36,11 +36,19 @@ function(input, output, session) {
           updateTabItems(session, "tabs", context$t)
         })
       }
+      if (!is.null(context$file)) {
+        params_filename <<- context$file
+        params_file <<- get_local_set(context$file, sparql_data_uri)
+      } else {
+        params_filename <<- "spql17.tsv"
+        params_file <<- get_local_set(params_filename, sparql_data_uri)
+      }
     })
 
     observeEvent(input$switchtab, {
         updateTabItems(session, "tabs", input$switchtab)
     })
+
 
     # Home
     source('./src/output/server-home.R', local=TRUE)

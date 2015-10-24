@@ -19,3 +19,10 @@ setkey(dt_comments, id)
 dt_join_rdfq <- merge(dt_queries, dt_comments, all=TRUE)
 dt_join_rdfq <- dt_join_rdfq[,.SD,.SDcols=c(2:3)]
 output$wikidata_rdf_queries_table <- DT::renderDataTable(datatable(dt_join_rdfq,  options = list(pageLength = 50)))
+
+# http://wikiba.se/metrics#ParamGraph
+output$param_graph <- renderDygraph({
+comment_index <- substring(gsub(".tsv", "", params_filename),5)
+chart_title <- comments[comment_index,]
+dygraph_from_param_file(chart_title)
+})

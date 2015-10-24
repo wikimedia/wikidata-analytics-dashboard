@@ -22,7 +22,8 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "addUsagesForPage", tabName = "wikidata_addUsagesForPage")),
     menuItem(text = "", badgeLabel = "Daily RDF", badgeColor = "red"),
     menuItem(text = "Queries", icon = icon("question"),
-             menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries")),
+             menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries"),
+             menuSubItem(text = "Graphs", tabName = "wikidata_rdf_graphs")),
     menuItem(text = "", badgeLabel = "Monthly", badgeColor = "purple"),
     menuItem(text = "Engagement", icon = icon("eye"),
              menuSubItem(text = "Edits", tabName = "wikidata_edits"),
@@ -113,6 +114,8 @@ body <- dashboardBody(
               uiOutput("metric_meta_rdf_queries")
             ),
             DT::dataTableOutput("wikidata_rdf_queries_table")),
+    tabItem(tabName = "wikidata_rdf_graphs",
+            dygraphOutput("param_graph")),
     tabItem(tabName = "wikidata_edits",
             fluidRow(
               infoBoxOutput("editdelta")
