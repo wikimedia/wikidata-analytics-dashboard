@@ -185,3 +185,14 @@ internal_reference_box <- function(dv, href, value) {
   return(box(title = "seeAlso", width = 6, status = "primary", tags$a(href=href, 'data-toggle'='tab','data-value'=dv, value)))
 }
 
+dygraph_from_param_file <- function(chart_title){
+  dt_spql_file <- data.table(params_file)
+  return(dygraph(dt_spql_file,
+                 main = chart_title,
+                 ylab = "") %>%
+           dyOptions(useDataTimezone = TRUE,
+                     labelsKMB = TRUE,
+                     fillGraph = TRUE,
+                     strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+           dyCSS(css = custom_css))
+}
