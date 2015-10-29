@@ -22,7 +22,7 @@ output$wikidata_rdf_queries_table <- DT::renderDataTable(datatable(dt_join_rdfq,
 
 # http://wikiba.se/metrics#ParamGraph
 output$param_graph <- renderDygraph({
-comment_index <- substring(gsub(".tsv", "", params_filename),5)
-chart_title <- comments[comment_index,]
-dygraph_from_param_file(chart_title)
+  comment_index <- substring(gsub(".tsv", "", params_filename),5)
+  chart_title <- comments[comment_index,]
+  dygraph_from_param_file(chart_title)
 })

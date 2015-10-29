@@ -1,10 +1,16 @@
 ## Quick start
 
-Install the dependencies:
+Install System Dependencies (Ubuntu):
+```
+apt-get install libcurl4-openssl-dev
+apt-get install libxml2-dev
+```
+
+Install the R dependencies:
 
 ```
 $ R
-> install.packages(c("curl", "httpuv", "readr", "xts", "reshape2",
+> install.packages(c("curl", "stringi", "httpuv", "readr", "xts", "reshape2",
     "RColorBrewer", "shiny", "shinydashboard", "dygraphs", "markdown",
     "ggplot2", "toOrdinal", "plyr", "lubridate", "magrittr", "data.table", "XML", "DT"))
 ```
