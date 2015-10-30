@@ -19,7 +19,7 @@ library(data.table)
 library(DT)
 library(XML)
 
-base_uri <- "/srv/dashboards/shiny-server/wdm/"
+base_uri <- "./"
 data_uri <- paste0(base_uri, "data/")
 sparql_data_uri <- paste0(data_uri, "sparql/")
 graphite_api_uri <- "https://graphite.wikimedia.org/render/?target="
