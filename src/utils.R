@@ -202,12 +202,38 @@ dygraph_from_param_property <- function(){
   setkey(dt_getclaims_file, property)
   dt_getclaims_property <- dt_getclaims_file[params_property]
   dt_getclaims_property <- dt_getclaims_property[,.SD,.SDcols=c(1,3)]
+  title_query <- get_property_label_query(params_property)
+  pfx <- get_property_label_prefixes()
+  title <- get_sparql_result(wdqs_uri, pfx, title_query)
   return(dygraph(dt_getclaims_property,
-                 main = params_property,
+                 main = paste0(params_property, " : ", title$text),
                  ylab = "") %>%
            dyOptions(useDataTimezone = TRUE,
                      labelsKMB = TRUE,
                      fillGraph = TRUE,
                      strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
            dyCSS(css = custom_css))
+}
+
+get_property_label_query <- function(params_property){
+  query = curl_escape(paste0("SELECT distinct ?o WHERE {wd:",params_property, " ?p ?o
+    SERVICE wikibase:label {
+      bd:serviceParam wikibase:language \"en\" .
+      wd:",params_property," rdfs:label ?o
+    }
+  }"))
+  return(query)
+}
+
+get_property_label_prefixes <- function(){
+  prefixes <- "PREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3EPREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3EPREFIX%20rdfs%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E"
+  return(prefixes)
+}
+
+get_sparql_result <- function(uri = wdqs_uri, prefix, query) {
+  # escape_query <- curl_escape(query)
+  xml_result <- readLines(curl(paste0(uri, prefix, query)))
+  doc = xmlParse(xml_result)
+  result = xmlToDataFrame(nodes = getNodeSet(doc, "//sq:literal", c(sq = "http://www.w3.org/2005/sparql-results#")))
+  return(result)
 }
