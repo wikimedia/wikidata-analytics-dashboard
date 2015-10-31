@@ -4,7 +4,7 @@
 output$metric_meta_getclaims_title <- renderUI({
   first_sample <- head(wikidata_daily_getclaims_property_use$date, 1)
   last_sample <<- tail(wikidata_daily_getclaims_property_use$date, 1)
-  metric_desc <- "Aggregate getClaim Property Use count"
+  metric_desc <- "Aggregate wbgetclaims Property Use count"
   metric_range <- paste0("From ", first_sample, " To ", last_sample)
   box(title = "Definition", width = 6, status = "info", metric_desc, HTML("<br/>"), metric_range)
 })
@@ -38,7 +38,7 @@ output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable({
                 )
               )
             ),
-            caption = "Statistics for GetClaims Property Use") %>%
+            caption = "Statistics for wbgetclaims Property Use") %>%
             formatCurrency(c("count","i.count"), currency = "", interval = 3, mark = ",")
 })
 

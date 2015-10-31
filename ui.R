@@ -23,7 +23,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
              menuSubItem(text = "New Active Users/Day", tabName = "wikidata_daily_users_delta")),
     menuItem(text = "API Usage", icon = icon("gears"),
-             menuSubItem(text = "getClaims", tabName = "wikidata_daily_getclaims_property_use"),
+             menuSubItem(text = "wbgetclaims", tabName = "wikidata_daily_getclaims_property_use"),
              menuSubItem(text = "Graphs", tabName = "wikidata_getclaims_property_graphs")),
     menuItem(text = "", badgeLabel = "Graphite", badgeColor = "black"),
     menuItem(text = "Usages", icon = icon("question"),
