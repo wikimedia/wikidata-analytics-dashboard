@@ -196,3 +196,18 @@ dygraph_from_param_file <- function(chart_title){
                      strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
            dyCSS(css = custom_css))
 }
+
+dygraph_from_param_property <- function(){
+  dt_getclaims_file <- data.table(wikidata_daily_getclaims_property_use)
+  setkey(dt_getclaims_file, property)
+  dt_getclaims_property <- dt_getclaims_file[params_property]
+  dt_getclaims_property <- dt_getclaims_property[,.SD,.SDcols=c(1,3)]
+  return(dygraph(dt_getclaims_property,
+                 main = params_property,
+                 ylab = "") %>%
+           dyOptions(useDataTimezone = TRUE,
+                     labelsKMB = TRUE,
+                     fillGraph = TRUE,
+                     strokeWidth = 2, colors = brewer.pal(5, "Set2")[5:1]) %>%
+           dyCSS(css = custom_css))
+}

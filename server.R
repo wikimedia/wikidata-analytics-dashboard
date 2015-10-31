@@ -43,6 +43,11 @@ function(input, output, session) {
         params_filename <<- "spql17.tsv"
         params_file <<- get_local_set(params_filename, sparql_data_uri)
       }
+      if (!is.null(context$property)) {
+        params_property <<- context$property
+      } else {
+        params_property <<- "P1"
+      }
     })
 
     observeEvent(input$switchtab, {

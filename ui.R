@@ -10,13 +10,21 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     id = "tabs",
     menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+    menuItem(text = "", badgeLabel = "Performance", badgeColor = "aqua"),
+    menuItem(text = "KPI", icon = icon("trophy"),
+            menuSubItem(text = "Community Health", tabName = "wikidata_community_health"),
+            menuSubItem(text = "Quality", tabName = "wikidata_quality"),
+            menuSubItem(text = "Partnerships", tabName = "wikidata_partnerships"),
+            menuSubItem(text = "External Use", tabName = "wikidata_external_use"),
+            menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use")),
     menuItem(text = "", badgeLabel = "Recent", badgeColor = "green"),
     menuItem(text = "Frequency Stats", icon = icon("signal"),
              menuSubItem(text = "Edits/Day", tabName = "wikidata_daily_edits_delta"),
              menuSubItem(text = "New Pages/Day", tabName = "wikidata_daily_pages_delta"),
              menuSubItem(text = "New Active Users/Day", tabName = "wikidata_daily_users_delta")),
-    menuItem(text = "Developer", icon = icon("gears"),
-             menuSubItem(text = "getClaims Usage", tabName = "wikidata_daily_getclaims_property_use")),
+    menuItem(text = "API Usage", icon = icon("gears"),
+             menuSubItem(text = "getClaims", tabName = "wikidata_daily_getclaims_property_use"),
+             menuSubItem(text = "Graphs", tabName = "wikidata_getclaims_property_graphs")),
     menuItem(text = "", badgeLabel = "Graphite", badgeColor = "black"),
     menuItem(text = "Usages", icon = icon("question"),
              menuSubItem(text = "addUsagesForPage", tabName = "wikidata_addUsagesForPage")),
@@ -41,14 +49,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "Statements per item", tabName = "wikidata_content_statement_item"),
              menuSubItem(text = "Labels per item", tabName = "wikidata_content_labels_item"),
              menuSubItem(text = "Descriptions per item", tabName = "wikidata_content_descriptions_item"),
-             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item")),
-     menuItem(text = "", badgeLabel = "Performance", badgeColor = "aqua"),
-     menuItem(text = "KPI", icon = icon("trophy"),
-             menuSubItem(text = "Community Health", tabName = "wikidata_community_health"),
-             menuSubItem(text = "Quality", tabName = "wikidata_quality"),
-             menuSubItem(text = "Partnerships", tabName = "wikidata_partnerships"),
-             menuSubItem(text = "External Use", tabName = "wikidata_external_use"),
-             menuSubItem(text = "Internal Use", tabName = "wikidata_internal_use"))
+             menuSubItem(text = "Wiki(m|p)edia links per item", tabName = "wikidata_content_wikilinks_item"))
   )
 )
 
@@ -107,6 +108,8 @@ body <- dashboardBody(
               uiOutput("metric_meta_getclaims_title")
             ),
             DT::dataTableOutput("wikidata_daily_getclaims_property_use_table")),
+    tabItem(tabName = "wikidata_getclaims_property_graphs",
+            dygraphOutput("param_property_graph")),
     tabItem(tabName = "wikidata_addUsagesForPage",
             dygraphOutput("wikidata_addUsagesForPage_plot")),
     tabItem(tabName = "wikidata_rdf_queries",

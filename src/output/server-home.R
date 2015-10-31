@@ -22,7 +22,7 @@ dt_join_hrefs <- dt_join[dt_hrefs]
 dt_join_hrefs <- dt_join_hrefs[,.SD,.SDcols=c(1:2,5:6)]
 cuts <- 0
 output$wikidata_daily_summary_table <- DT::renderDataTable(
-  datatable(dt_join_hrefs[2:5], class = "display compact", colnames = c("Object", "Value", "Delta", "Chart"),
+  datatable(dt_join_hrefs[2:5], class = "display compact", colnames = c("Object", "Count", "Delta", "Chart"),
             options = list(
               dom = 't',
               columnDefs = list(
@@ -64,7 +64,7 @@ dv_join_hrefs <- dv_join[dv_hrefs]
 dv_join_hrefs <- dv_join_hrefs[,.SD,.SDcols=c(1:2,5:6)]
 cuts <- 0
 output$wikidata_daily_datavalues_table <- DT::renderDataTable(
-  datatable(dv_join_hrefs[2:5], class = "display compact", colnames = c("Object", "Value", "Delta", "Chart"),
+  datatable(dv_join_hrefs[2:5], class = "display compact", colnames = c("Object", "Count", "Delta", "Chart"),
             options = list(
               dom = 't',
               columnDefs = list(
@@ -78,7 +78,7 @@ output$wikidata_daily_datavalues_table <- DT::renderDataTable(
                 )
               )
             ),
-    caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
+            caption = paste0("WDQS Sourced Statistics for ", dv_join[1,V1])) %>%
     formatCurrency(2:3, currency = "", interval = 3, mark = ",") %>%
     formatStyle(3, color = styleInterval(cuts, c("red", "green"))
     )
