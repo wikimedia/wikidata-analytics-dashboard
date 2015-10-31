@@ -10,7 +10,7 @@ output$metric_meta_getclaims_title <- renderUI({
 })
 dt_getclaims_file <- data.table(wikidata_daily_getclaims_property_use)
 setkey(dt_getclaims_file, property)
-dt_getclaims_file <- dt_getclaims_file[which(dt_getclaims_file$date > Sys.Date() - 3),]
+dt_getclaims_file <- dt_getclaims_file[which(dt_getclaims_file$date >= last_sample)]
 aggr_props <- aggregate(as.numeric(wikidata_daily_getclaims_property_use$count), by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
 aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
 dt_agg_props_ordered <- data.table(aggr_props_ordered)
