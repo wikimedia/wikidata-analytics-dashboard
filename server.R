@@ -46,7 +46,7 @@ function(input, output, session) {
       if (!is.null(context$property)) {
         params_property <<- context$property
       } else {
-        params_property <<- "P1"
+        params_property <<- "P373"
       }
     })
 

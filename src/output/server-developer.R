@@ -8,18 +8,18 @@ output$metric_meta_getclaims_title <- renderUI({
   metric_range <- paste0("From ", first_sample, " To ", last_sample)
   box(title = "Definition", width = 6, status = "info", metric_desc, HTML("<br/>"), metric_range)
 })
-dt_getclaims_file <- data.table(wikidata_daily_getclaims_property_use)
-setkey(dt_getclaims_file, property)
-dt_getclaims_file <- dt_getclaims_file[which(dt_getclaims_file$date >= last_sample)]
-aggr_props <- aggregate(as.numeric(wikidata_daily_getclaims_property_use$count), by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
-aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
-dt_agg_props_ordered <- data.table(aggr_props_ordered)
-dt_agg_props_ordered <- setnames(dt_agg_props_ordered, c("property", "count"))
-setkey(dt_agg_props_ordered, property)
-aggr_props_join <- dt_agg_props_ordered[dt_getclaims_file]
-aggr_props_join <- aggr_props_join[,.SD,.SDcols=c(1:2,4)]
-aggr_props_join <- aggr_props_join[order(aggr_props_join$count, decreasing = TRUE)]
-output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(
+output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable({
+  dt_getclaims_file <- data.table(wikidata_daily_getclaims_property_use)
+  setkey(dt_getclaims_file, property)
+  dt_getclaims_file <- dt_getclaims_file[which(dt_getclaims_file$date >= last_sample)]
+  aggr_props <- aggregate(as.numeric(wikidata_daily_getclaims_property_use$count), by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
+  aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
+  dt_agg_props_ordered <- data.table(aggr_props_ordered)
+  dt_agg_props_ordered <- setnames(dt_agg_props_ordered, c("property", "count"))
+  setkey(dt_agg_props_ordered, property)
+  aggr_props_join <- dt_agg_props_ordered[dt_getclaims_file]
+  aggr_props_join <- aggr_props_join[,.SD,.SDcols=c(1:2,4)]
+  aggr_props_join <- aggr_props_join[order(aggr_props_join$count, decreasing = TRUE)]
   datatable(aggr_props_join, class = "display compact", colnames = c("Property", "Agg. Count", paste0("Last Sample: ", last_sample), "Chart"),
             rownames = FALSE,
             options = list(
@@ -40,7 +40,7 @@ output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable(
             ),
             caption = "Statistics for GetClaims Property Use") %>%
             formatCurrency(c("count","i.count"), currency = "", interval = 3, mark = ",")
-)
+})
 
 
 # http://wikiba.se/metrics#ParamPropertyGraph
