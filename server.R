@@ -14,20 +14,26 @@ get_data <- function(updateProgress = NULL) {
     updateProgress(detail = "finished")
   }
 }
+get_local_datasets()
+get_local_sparql_results()
+get_remote_datasets()
+get_graphite_datasets()
+load_rdf_model()
+get_rdf_objects()
 #Start Server
 function(input, output, session) {
 
-    progress <- shiny::Progress$new()
-    progress$set(message = "Fetching data", value = 0)
-    on.exit(progress$close())
-    updateProgress <- function(value = NULL, detail = NULL) {
-      if (is.null(value)) {
-        value <- progress$getValue()
-        value <- value + (progress$getMax() - value) / 6
-      }
-      progress$set(value = value, detail = detail)
-    }
-    get_data(updateProgress)
+#    progress <- shiny::Progress$new()
+#    progress$set(message = "Fetching data", value = 0)
+#    on.exit(progress$close())
+#    updateProgress <- function(value = NULL, detail = NULL) {
+#      if (is.null(value)) {
+#        value <- progress$getValue()
+#        value <- value + (progress$getMax() - value) / 6
+#      }
+#      progress$set(value = value, detail = detail)
+#    }
+#    get_data(updateProgress)
 
     observe({
       context <- parseQueryString(session$clientData$url_search)
