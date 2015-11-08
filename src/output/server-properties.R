@@ -11,8 +11,8 @@ output$wikidata_property_usage_count_table <- DT::renderDataTable({
               order = list(2, 'desc'),
               pageLength = 100,
               columnDefs = list(
-                list(className = 'dt-left', targets = c(0,1,2)
-                ),
+                list(className = 'dt-left', targets = c(1,2)),
+                list(visible = FALSE, targets = c(0)),
                 list(targets = c(1), render = JS(
                   "function(data, type, row, meta) {",
                   "return '<a href=\"https://www.wikidata.org/wiki/Property:'+data+'\" target=\"_blank\">'+data+'</a>'",
