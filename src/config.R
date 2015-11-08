@@ -14,6 +14,7 @@ library(toOrdinal)
 library(lubridate)
 library(magrittr)
 library(curl)
+library(RCurl)
 library(rrdf)
 library(data.table)
 library(DT)
@@ -29,4 +30,6 @@ metrics_rdf <- paste0(base_uri, "assets/metrics.owl")
 source_data_uri <- "http://wdm-data.wmflabs.org/data/"
 agg_data_uri <- "http://datasets.wikimedia.org/aggregate-datasets/wikidata/"
 wdqs_uri <- "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query="
+wdmrdf_uri <- "https://wdm-rdf.wmflabs.org/bigdata/namespace/wdq/sparql?query="
+estcard.uri <- "http://wdm-rdf.wmflabs.org/bigdata/namespace/wdq/sparql?ESTCARD"
 

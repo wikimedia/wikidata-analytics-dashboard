@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<RDF xmlns="http://wikiba.se/rdfq#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <prefixes>
+    <prefix>PREFIX%20wikibase%3A%20%3Chttp%3A%2F%2Fwikiba.se%2Fontology%23%3E</prefix>
+  <!-- Get All Properties -->
+  <rdf-query>
+    <select>SELECT ?s WHERE {?s ?p wikibase:Property}</select>
+    <rdfs:comment>All Properties</rdfs:comment>
+  </rdf-query>
+</RDF>

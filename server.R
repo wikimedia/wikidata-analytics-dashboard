@@ -77,4 +77,6 @@ function(input, output, session) {
     source('./src/output/server-content.R', local=TRUE)
     # KPI
     source('./src/output/server-KPI.R', local=TRUE)
+    # Property Usage
+    source('./src/output/server-properties.R', local=TRUE)
 }
