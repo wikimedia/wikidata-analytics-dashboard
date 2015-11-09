@@ -22,10 +22,11 @@ write_prop_usage_counts <- function() {
   setkey(props, id)
   setkey(prop_counts, id)
   setkey(labels, id)
-  dt_join_prop_usage <- props[prop_counts]
+  dt_join_props <- props[labels]
+  dt_join_prop_usage <- dt_join_props[prop_counts]
   dt_join_prop_usage <- dt_join_prop_usage[,.SD,.SDcols=c(1,3,4)]
   dt_join_prop_usage <- setnames(dt_join_prop_usage, c("Property","Label","Count"))
-  write.table(dt_join_prop_usage, paste0(sparql_data_uri, "prop_usage.tsv"), sep = "\t", row.names = FALSE)
+  write.table(dt_join_prop_usage, "/srv/dashboards/shiny-server/wdm/data/sparql/prop_usage.tsv", sep = "\t", row.names = FALSE)
 }
 
 write_prop_usage_counts()
