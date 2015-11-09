@@ -230,21 +230,21 @@ get_property_label_prefixes <- function(){
 }
 
 get_property_list_query <- function(){
-  query = curl_escape("SELECT ?s WHERE {?s ?p wikibase:Property}")
+  query = curl_escape("SELECT ?s ?o WHERE {?s ?p wikibase:Property .
+SERVICE wikibase:label {
+      bd:serviceParam wikibase:language \"en\" .
+      ?s rdfs:label ?o}}")
   return(query)
 }
 
 get_sparql_result <- function(uri = wdqs_uri, prefix, query) {
   xml_result <- readLines(curl(paste0(uri, prefix, query)))
   doc = xmlParse(xml_result)
-  result = xmlToDataFrame(nodes = getNodeSet(doc, "//sq:literal", c(sq = "http://www.w3.org/2005/sparql-results#")))
-  return(result)
+  return(doc)
 }
 
-get_sparql_result_from_uri <- function(uri = wdmrdf_uri, prefix, query) {
-  xml_result <- readLines(curl(paste0(uri, prefix, query)))
-  doc = xmlParse(xml_result)
-  result = xmlToDataFrame(nodes = getNodeSet(doc, "//sq:uri", c(sq = "http://www.w3.org/2005/sparql-results#")))
+get_dataframe_from_xml_result <- function(doc, qname) {
+  result = xmlToDataFrame(nodes = getNodeSet(doc, qname, c(sq = "http://www.w3.org/2005/sparql-results#")))
   return(result)
 }
 
@@ -253,5 +253,9 @@ get_estimated_card_from_prop_predicate <- function(uri = estcard.uri, predicate)
   doc = xmlParse(xml_result)
   result = xpathApply(doc, "//data[@rangeCount]", xmlGetAttr, "rangeCount")
   return(result)
+
+}
+
+join_data_frames <- function(x, y) {
 
 }
