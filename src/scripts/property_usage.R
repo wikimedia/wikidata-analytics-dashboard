@@ -1,6 +1,8 @@
 #Bulk Query of WDQS for Property Use Counts and write to TSV
-source("/srv/dashboards/shiny-server/wdm/src/config.R")
-source("/srv/dashboards/shiny-server/wdm/src/utils.R")
+
+src.path <- "/srv/dashboards/shiny-server/wdm/src/"
+source(paste0(src.path, "config.R"), chdir=T)
+source(paste0(src.path, "utils.R"), chdir=T)
 
 write_prop_usage_counts <- function() {
   query <- get_property_list_query()
@@ -18,7 +20,7 @@ write_prop_usage_counts <- function() {
   dt_join_prop_usage <- props[prop_counts]
   dt_join_prop_usage <- dt_join_prop_usage[,.SD,.SDcols=c(1,3)]
   dt_join_prop_usage <- setnames(dt_join_prop_usage, c("Property", "Count"))
-  write.table(dt_join_prop_usage, "/srv/dashboards/shiny-server/wdm/data/sparql/prop_usage.tsv", sep = "\t", row.names = FALSE)
+  write.table(dt_join_prop_usage, paste0(sparql_data_uri, "prop_usage.tsv"), sep = "\t", row.names = FALSE)
 }
 
 write_prop_usage_counts()
