@@ -203,7 +203,8 @@ dygraph_from_param_property <- function(){
   dt_getclaims_property <- dt_getclaims_property[,.SD,.SDcols=c(1,3)]
   title_query <- get_property_label_query(params_property)
   pfx <- get_property_label_prefixes()
-  title <- get_sparql_result(wdqs_uri, pfx, title_query)
+  title_doc <- get_sparql_result(wdqs_uri, pfx, title_query)
+  title <- get_dataframe_from_xml_result(title_doc, "//sq:literal")
   return(dygraph(dt_getclaims_property,
                  main = paste0(params_property, " : ", title$text),
                  ylab = "") %>%

@@ -1,6 +1,7 @@
 #Bulk Query of WDQS for Property Use Counts and write to TSV
 
 src.path <- "/srv/dashboards/shiny-server/wdm/src/"
+output.path <- "/srv/dashboards/shiny-server/wdm/data/sparql/"
 source(paste0(src.path, "config.R"), chdir=T)
 source(paste0(src.path, "utils.R"), chdir=T)
 
@@ -27,7 +28,14 @@ write_prop_usage_counts <- function(filename, predicate) {
   dt_join_prop_usage <- dt_join_props[prop_counts]
   dt_join_prop_usage <- dt_join_prop_usage[,.SD,.SDcols=c(1,3,4)]
   dt_join_prop_usage <- setnames(dt_join_prop_usage, c("Property","Label","Count"))
-  write.table(dt_join_prop_usage, paste0("/srv/dashboards/shiny-server/wdm/data/sparql/",filename), sep = "\t", row.names = FALSE)
+  write.table(dt_join_prop_usage, paste0(output.path,filename), sep = "\t", row.names = FALSE)
 }
 
+wd_prop_predicates <- c("prop/statement/","prop/statement/value/",
+                        "prop/reference/","prop/reference/value/","prop/qualifier/",
+                        "prop/qualifier/value/","prop/direct/")
+wd_prop_count_files <- c("property_statement_usage.tsv", "property_statement_value_usage.tsv",
+                         "property_reference_usage.tsv", "property_reference_value_usage.tsv",
+                         "property_qualifier_usage.tsv", "property_qualifier_value_usage.tsv",
+                         "property_direct_usage.tsv")
 write_prop_usage_counts("statement_value_property_usage.tsv", "prop/statement/value/")

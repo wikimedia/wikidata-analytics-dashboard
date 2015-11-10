@@ -30,7 +30,7 @@ sidebar <- dashboardSidebar(
              menuSubItem(text = "addUsagesForPage", tabName = "wikidata_addUsagesForPage")),
     menuItem(text = "", badgeLabel = "Daily RDF", badgeColor = "red"),
     menuItem(text = "Property Usage", icon = icon("exchange"),
-             menuSubItem(text = "List", tabName = "wikidata_property_usage_count")),
+             menuSubItem(text = "/prop/", tabName = "wikidata_property_usage_count")),
     menuItem(text = "Queries", icon = icon("question"),
              menuSubItem(text = "Lists", tabName = "wikidata_rdf_queries"),
              menuSubItem(text = "Graphs", tabName = "wikidata_rdf_graphs")),

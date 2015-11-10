@@ -2,7 +2,7 @@
 
 src.path <- "/srv/dashboards/shiny-server/wdm/src/"
 source(paste0(src.path, "config.R"), chdir=T)
-output_path = sparql_data_uri
+output_path = "/srv/dashboards/shiny-server/wdm/data/sparql/"
 qlist <- read_file("/srv/dashboards/shiny-server/wdm/assets/rdfq.xml")
 
 rdfq <- xmlParse(qlist)
