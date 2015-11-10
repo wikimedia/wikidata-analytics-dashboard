@@ -248,14 +248,9 @@ get_dataframe_from_xml_result <- function(doc, qname) {
   return(result)
 }
 
-get_estimated_card_from_prop_predicate <- function(uri = estcard.uri, predicate) {
-  xml_result <- getForm(uri, p=paste0("<http://www.wikidata.org/prop/statement/", predicate, ">"))
+get_estimated_card_from_prop_predicate <- function(uri = estcard.uri, predicate, literal) {
+  xml_result <- getForm(uri, p=paste0("<http://www.wikidata.org/", predicate, literal, ">"))
   doc = xmlParse(xml_result)
   result = xpathApply(doc, "//data[@rangeCount]", xmlGetAttr, "rangeCount")
   return(result)
-
-}
-
-join_data_frames <- function(x, y) {
-
 }

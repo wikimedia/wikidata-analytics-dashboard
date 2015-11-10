@@ -10,14 +10,14 @@ output$metric_meta_getclaims_title <- renderUI({
 })
 output$wikidata_daily_getclaims_property_use_table <-DT::renderDataTable({
   dt_getclaims_file <- data.table(wikidata_daily_getclaims_property_use)
-  setkey(dt_getclaims_file, property)
-  dt_getclaims_file <- dt_getclaims_file[which(dt_getclaims_file$date >= last_sample)]
+  dt_getclaims_recent <- dt_getclaims_file[which(dt_getclaims_file$date >= last_sample)]
   aggr_props <- aggregate(as.numeric(wikidata_daily_getclaims_property_use$count), by=list(wikidata_daily_getclaims_property_use$property), FUN = sum)
   aggr_props_ordered <- aggr_props[order(aggr_props$x, decreasing = TRUE),]
   dt_agg_props_ordered <- data.table(aggr_props_ordered)
   dt_agg_props_ordered <- setnames(dt_agg_props_ordered, c("property", "count"))
   setkey(dt_agg_props_ordered, property)
-  aggr_props_join <- dt_agg_props_ordered[dt_getclaims_file]
+  setkey(dt_getclaims_recent, property)
+  aggr_props_join <- dt_agg_props_ordered[dt_getclaims_recent]
   aggr_props_join <- aggr_props_join[,.SD,.SDcols=c(1:2,4)]
   aggr_props_join <- aggr_props_join[order(aggr_props_join$count, decreasing = TRUE)]
   datatable(aggr_props_join, class = "display compact", colnames = c("Property", "Agg. Count", paste0("Last Sample: ", last_sample), "Chart"),
