@@ -1,0 +1,117 @@
+
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #Bulk Query of WDQS for Statement per Item Counts and write to TSV
+> 
+> src.path <- "/srv/dashboards/shiny-server/wdm/src/"
+> output.path <- "/srv/dashboards/shiny-server/wdm/data/sparql/"
+> source(paste0(src.path, "config.R"), chdir=T)
+
+Attaching package: ‘shinydashboard’
+
+The following object is masked from ‘package:graphics’:
+
+    box
+
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Attaching package: ‘scales’
+
+The following objects are masked from ‘package:readr’:
+
+    col_factor, col_numeric
+
+
+Attaching package: ‘lubridate’
+
+The following object is masked from ‘package:plyr’:
+
+    here
+
+
+Attaching package: ‘curl’
+
+The following object is masked from ‘package:readr’:
+
+    parse_date
+
+Loading required package: bitops
+Loading required package: rJava
+
+Attaching package: ‘rJava’
+
+The following object is masked from ‘package:RCurl’:
+
+    clone
+
+Loading required package: rrdflibs
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:lubridate’:
+
+    hour, mday, month, quarter, wday, week, yday, year
+
+The following objects are masked from ‘package:reshape2’:
+
+    dcast, melt
+
+The following object is masked from ‘package:xts’:
+
+    last
+
+
+Attaching package: ‘DT’
+
+The following objects are masked from ‘package:shiny’:
+
+    dataTableOutput, renderDataTable
+
+> source(paste0(src.path, "utils.R"), chdir=T)
+> 
+> write_statement_item_counts <- function(filename) {
++   query <- get_item_list_query()
++   prefix <- get_property_label_prefixes()
++   doc <- get_sparql_result(wdmrdf_uri, prefix, query)
++   ilist <- get_dataframe_from_xml_result(doc, "//sq:uri")
++   items <- data.frame(ilist)
++   values <- lapply(items$text, function(x) get_statements_per_item(wdqs_uri, x))
++   vals <- data.frame(Reduce(rbind, values))
++   statement_counts <- data.table(vals)
++   items <- data.table(items$text)
++   items$id <- seq_len(nrow(items))
++   statement_counts$id <- seq_len(nrow(statement_counts))
++   setkey(items, id)
++   setkey(statement_counts, id)
++   dt_join_items <- items[statement_counts]
++   dt_join_statements_item <- dt_join_items[,.SD,.SDcols=c(1,3)]
++   dt_join_statements_item  <- setnames(dt_join_statements_item , c("Item","Statement Count"))
++   write.table(dt_join_statements_item, paste0(output.path,filename), sep = "\t", row.names = FALSE)
++ }
+> 
+> write_statement_item_counts("statements_per_item.tsv")

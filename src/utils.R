@@ -238,6 +238,11 @@ SERVICE wikibase:label {
   return(query)
 }
 
+get_item_list_query <- function(){
+  query = curl_escape("SELECT ?s ?o WHERE {?s ?p wikibase:Item} LIMIT 1000000")
+  return(query)
+}
+
 get_sparql_result <- function(uri = wdqs_uri, prefix, query) {
   xml_result <- readLines(curl(paste0(uri, prefix, query)))
   doc = xmlParse(xml_result)
@@ -253,5 +258,16 @@ get_estimated_card_from_prop_predicate <- function(uri = estcard.uri, predicate,
   xml_result <- getForm(uri, p=paste0("<http://www.wikidata.org/", predicate, literal, ">"))
   doc = xmlParse(xml_result)
   result = xpathApply(doc, "//data[@rangeCount]", xmlGetAttr, "rangeCount")
+  return(result)
+}
+
+get_statements_per_item <- function(uri = wdmrdf_uri, literal) {
+  query <- paste0("SELECT (count(distinct(?o)) AS ?ocount)   WHERE {
+ <", literal,  "> ?p ?o FILTER(STRSTARTS(STR(?p), \"http://www.wikidata.org/prop/direct\"))
+}")
+  esc_query <- curl_escape(query)
+  prefix = ""
+  doc <- get_sparql_result(uri, prefix, esc_query)
+  result <- get_dataframe_from_xml_result(doc, "//sq:literal")
   return(result)
 }
